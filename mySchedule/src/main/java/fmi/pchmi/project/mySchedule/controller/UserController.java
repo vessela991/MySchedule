@@ -1,88 +1,51 @@
 package fmi.pchmi.project.mySchedule.controller;
 
-
-import fmi.pchmi.project.mySchedule.model.user.User;
-import fmi.pchmi.project.mySchedule.model.user.request.UserLoginRequestModel;
-import fmi.pchmi.project.mySchedule.model.user.request.UserRegisterRequestModel;
-import fmi.pchmi.project.mySchedule.repository.UserRepository;
+import fmi.pchmi.project.mySchedule.internal.constants.CommonConstants;
+import fmi.pchmi.project.mySchedule.internal.constants.Routes;
+import fmi.pchmi.project.mySchedule.model.database.user.User;
+import fmi.pchmi.project.mySchedule.model.request.user.UserEditRequest;
+import fmi.pchmi.project.mySchedule.model.request.user.UserRequest;
+import fmi.pchmi.project.mySchedule.model.response.user.UserResponse;
+import fmi.pchmi.project.mySchedule.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.xml.bind.ValidationException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.Collection;
 
 @RestController
 @RequestMapping("/")
 public class UserController {
 
     @Autowired
-    UserRepository userRepository;
+    private UserService userService;
 
-    @GetMapping("/users")
-    Iterable<User> getAllUsers() {
-        return userRepository.findAll();
+    @GetMapping(Routes.USERS)
+    public ResponseEntity<Collection<UserResponse>> getAllUsers() {
+        return new ResponseEntity<>(userService.getAllUsers(), HttpStatus.OK);
     }
 
-//    @PutMapping("/users/{id}")
-//    User editUser(@RequestBody() UserRegisterRequestModel userRegisterRequestModel) {
-//        if ()
-//    }
-
-
-    @PostMapping("/login")
-    User login(@RequestBody() UserLoginRequestModel userLoginRequestModel) throws ValidationException {
-        if (!userRepository.findByUsername(userLoginRequestModel.getUsername()).isPresent()) {
-            throw new ValidationException("User with this username does not exist!");
-        }
-
-        User user = userRepository.findByUsername(userLoginRequestModel.getUsername()).orElse(null);
-
-        if (!user.getPassword().equals(userLoginRequestModel.getPassword())) {
-            throw new ValidationException("Bad credentials");
-        }
-
-        return user;
+    @GetMapping(Routes.USERS_ID)
+    public ResponseEntity<UserResponse> getUserById(@PathVariable("id") String userId) {
+        return new ResponseEntity<>(userService.getUserById(userId), HttpStatus.OK);
     }
 
-    @PostMapping("/create-user")
-    User createUser(@RequestBody() UserRegisterRequestModel userRegisterRequestModel) throws ValidationException {
-        validateUserRegisterData(userRegisterRequestModel);
-
-        return userRepository.save(User.fromUserRegisterRequestModel(userRegisterRequestModel));
+    @PostMapping(Routes.USERS)
+    public ResponseEntity<UserResponse> createUser(@RequestBody UserRequest userRequest) {
+        return new ResponseEntity<>(userService.createUser(userRequest), HttpStatus.CREATED);
     }
 
-    private void validateUserRegisterData(@RequestBody UserRegisterRequestModel userRegisterRequestModel) throws ValidationException {
-        if (userRepository.findByUsername(userRegisterRequestModel.getUsername()).isPresent()) {
-            throw new ValidationException("Username already exists!");
-        }
-
-        if (userRepository.findByEmail(userRegisterRequestModel.getEmail()).isPresent()) {
-            throw new ValidationException("Email already exists!");
-        }
-
-        if(!isPasswordValid(userRegisterRequestModel.getPassword())) {
-            throw new ValidationException("Password must contain at least one digit," +
-                    "lowercase character, uppercase character and a special character," +
-                    "no whitespaces permitted.");
-        }
-
-        if(!isEmailValid(userRegisterRequestModel.getEmail())) {
-            throw new ValidationException("Email is invalid!");
-        }
+    @PutMapping(Routes.USERS_ID)
+    public ResponseEntity<UserResponse> editUser(@PathVariable("id") String userId,
+                                                 @RequestBody UserEditRequest userEditRequest,
+                                                 @RequestAttribute(CommonConstants.LOGGED_USER) User loggedUser) {
+        return new ResponseEntity<>(userService.editUser(userId, userEditRequest, loggedUser), HttpStatus.OK);
     }
 
-    private boolean isEmailValid(String email) {
-        return isPropertyValid("^(.+)@(.+)$", email);
-    }
-
-    private boolean isPasswordValid(String password) {
-        return isPropertyValid("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$", password);
-    }
-
-    private boolean isPropertyValid(String regexp, String property) {
-        Pattern pattern = Pattern.compile(regexp);
-        return pattern.matcher(property).matches();
+    @DeleteMapping(Routes.USERS_ID)
+    public ResponseEntity deleteUser(@PathVariable("id") String userId) {
+        userService.deleteUser(userId);
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 }
