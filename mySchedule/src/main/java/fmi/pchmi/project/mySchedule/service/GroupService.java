@@ -1,107 +1,98 @@
 package fmi.pchmi.project.mySchedule.service;
 
+import fmi.pchmi.project.mySchedule.internal.CommonUtils;
 import fmi.pchmi.project.mySchedule.internal.constants.ExceptionMessages;
 import fmi.pchmi.project.mySchedule.model.database.group.Group;
-import fmi.pchmi.project.mySchedule.model.database.user.Role;
 import fmi.pchmi.project.mySchedule.model.database.user.User;
-import fmi.pchmi.project.mySchedule.model.exception.ForbiddenException;
 import fmi.pchmi.project.mySchedule.model.exception.ValidationException;
-import fmi.pchmi.project.mySchedule.model.request.group.GroupMembersRequest;
 import fmi.pchmi.project.mySchedule.model.request.group.GroupRequest;
+import fmi.pchmi.project.mySchedule.model.request.group.GroupUpdateRequest;
 import fmi.pchmi.project.mySchedule.model.validation.ValidationResult;
-import fmi.pchmi.project.mySchedule.repository.GroupRepository;
-import fmi.pchmi.project.mySchedule.repository.UserRepository;
+import fmi.pchmi.project.mySchedule.repository.helper.GroupRepositoryHelper;
+import fmi.pchmi.project.mySchedule.repository.helper.UserRepositoryHelper;
 import fmi.pchmi.project.mySchedule.validator.GroupValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.Collection;
 
 @Service
 public class GroupService {
 
     @Autowired
-    private GroupRepository groupRepository;
+    private GroupRepositoryHelper groupRepositoryHelper;
 
     @Autowired
-    private UserRepository userRepository;
+    private UserRepositoryHelper userRepositoryHelper;
 
     @Autowired
     private GroupValidator groupValidator;
 
-    public Group createGroup(GroupRequest groupRequest, User loggedUser) {
-        //some validation here
+    public Collection<Group> getAllGroups() {
+        return groupRepositoryHelper.findAllAsCollection();
+    }
+
+    public Group getGroupById(String groupId) {
+        return groupRepositoryHelper.findById(groupId);
+    }
+
+    public Group createGroup(GroupRequest groupRequest) {
+        validateGroupRequest(groupRequest);
+
+        if (groupRepositoryHelper.findByName(groupRequest.getName()) != null) {
+            throw ValidationException.create(String.format(ExceptionMessages.GROUP_NAME_ALREADY_EXISTS, groupRequest.getName()));
+        }
+
+        userRepositoryHelper.verifyUsersExist(groupRequest.getMembers());
+
+        Group group = new Group();
+        group.setName(groupRequest.getName());
+
+        group.setMembers(CommonUtils.asSet(groupRequest.getMembers()));
+
+        return groupRepositoryHelper.save(group);
+    }
+
+    public Group updateGroup(String groupId, GroupUpdateRequest groupUpdateRequest) {
+        validateGroupRequest(groupUpdateRequest);
+
+        Group group = groupRepositoryHelper.findById(groupId);
+
+        if (!group.getName().equals(groupUpdateRequest.getName())) {
+            if(groupRepositoryHelper.findByName(groupUpdateRequest.getName()) != null) {
+                throw ValidationException.create(String.format(ExceptionMessages.GROUP_NAME_ALREADY_EXISTS, groupUpdateRequest.getName()));
+            }
+
+            group.setName(groupUpdateRequest.getName());
+        }
+
+        userRepositoryHelper.verifyUsersExist(groupUpdateRequest.getMembers());
+
+        if (groupUpdateRequest.getManagerId() != null) {
+            userRepositoryHelper.findById(groupUpdateRequest.getManagerId()); //verify managerId exists
+            group.setManagerId(groupUpdateRequest.getManagerId());
+        }
+
+        group.setMembers(CommonUtils.asSet(groupUpdateRequest.getMembers()));
+        return groupRepositoryHelper.save(group);
+    }
+
+    public void deleteGroup(String groupId) {
+        Group group = groupRepositoryHelper.findById(groupId);
+        groupRepositoryHelper.deleteById(groupId); //first delete group, then delete all members, because group deletion may fail
+
+        for (String memberId: group.getMembers()) {
+            User user = userRepositoryHelper.findById(memberId);
+            user.setGroupId(""); //remove groupId from members
+            userRepositoryHelper.save(user);
+        }
+    }
+
+    private void validateGroupRequest(GroupRequest groupRequest) {
         ValidationResult validationResult = groupValidator.validateGroupRequest(groupRequest);
 
         if (!validationResult.isSuccess()) {
             throw ValidationException.create(validationResult.getValidationError());
         }
-
-        if (groupRepository.findByName(groupRequest.getName()) != null) {
-            throw ValidationException.create(ExceptionMessages.NAME_ALREADY_EXISTS);
-        }
-
-        verifyGroupMembersExist(groupRequest.getMembers());
-
-        if (loggedUser.getRole().equals(Role.MANAGER) && !groupRequest.getMembers().contains(loggedUser.getId())) {
-            groupRequest.getMembers().add(loggedUser.getId());
-        }
-
-        return groupRepository.save(Group.fromGroupRequest(groupRequest, loggedUser.getId()));
-    }
-
-    private void verifyGroupMembersExist(List<String> memberIds) {
-        for (String memberId : memberIds) {
-            userRepository.findById(memberId)
-                    .orElseThrow(() -> ValidationException.create(String.format(ExceptionMessages.USER_ID_DOES_NOT_EXIST, memberId)));
-        }
-    }
-
-    public Group addMemberToGroup(Group group, String memberId) {
-
-        if (!userRepository.findById(memberId).isPresent()) {
-            throw ValidationException.create(String.format(ExceptionMessages.USER_ID_DOES_NOT_EXIST, memberId));
-        }
-        //refactor ->
-        group.getMembers().add(memberId);
-        return groupRepository.save(group);
-    }
-
-    public Group addMembersToGroup(String groupId, GroupMembersRequest groupMembersRequest, User loggedUser) {
-        Group group = getGroupById(groupId);
-        verifyGroupMembersExist(groupMembersRequest.getMemberIds());
-
-        if (!group.getCreatorId().equals(loggedUser.getId()) || !loggedUser.getRole().equals(Role.ADMINISTRATOR)) {
-            throw ForbiddenException.create();
-        }
-
-        group.getMembers().addAll(groupMembersRequest.getMemberIds());
-        return groupRepository.save(group);
-    }
-
-    public Group removeMembersFromGroup(String groupId, GroupMembersRequest groupMembersRequest, User loggedUser) {
-        Group group = getGroupById(groupId);
-        verifyGroupMembersExist(groupMembersRequest.getMemberIds());
-
-        if (!group.getCreatorId().equals(loggedUser.getId()) || !loggedUser.getRole().equals(Role.ADMINISTRATOR)) {
-            throw ForbiddenException.create();
-        }
-
-        group.getMembers().removeAll(groupMembersRequest.getMemberIds());
-        return groupRepository.save(group);
-    }
-
-    public void deleteGroup(String groupId, User loggedUser) {
-        Group group = getGroupById(groupId);
-        if (!group.getCreatorId().equals(loggedUser.getId()) || !loggedUser.getRole().equals(Role.ADMINISTRATOR)) {
-            throw ForbiddenException.create();
-        }
-
-        groupRepository.delete(group);
-    }
-
-    private Group getGroupById(String groupId) {
-        return groupRepository.findById(groupId)
-                .orElseThrow(() -> ValidationException.create(String.format(ExceptionMessages.GROUP_ID_DOES_NOT_EXIST, groupId)));
     }
 }

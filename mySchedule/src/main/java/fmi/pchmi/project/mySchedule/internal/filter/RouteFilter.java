@@ -1,10 +1,11 @@
 package fmi.pchmi.project.mySchedule.internal.filter;
 
-import fmi.pchmi.project.mySchedule.model.exception.ForbiddenException;
 import fmi.pchmi.project.mySchedule.internal.CommonUtils;
 import fmi.pchmi.project.mySchedule.internal.constants.Routes;
 import fmi.pchmi.project.mySchedule.model.database.user.Role;
 import fmi.pchmi.project.mySchedule.model.database.user.User;
+import fmi.pchmi.project.mySchedule.model.exception.ForbiddenException;
+import fmi.pchmi.project.mySchedule.model.exception.UnauthorizedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.data.util.Pair;
@@ -33,20 +34,34 @@ public class RouteFilter extends OncePerRequestFilter {
     }};
 
     private static final Set<Pair<HttpMethod, String>> employeeRoutes = new HashSet<>(){{
+        add(Pair.of(HttpMethod.GET, Routes.USERS));
         add(Pair.of(HttpMethod.GET, Routes.USERS_ID));
         add(Pair.of(HttpMethod.PUT, Routes.USERS_ID));
+
+        add(Pair.of(HttpMethod.GET, Routes.GROUPS));
+        add(Pair.of(HttpMethod.GET, Routes.GROUPS_ID));
+
+        add(Pair.of(HttpMethod.GET, Routes.EVENTS));
+        add(Pair.of(HttpMethod.GET, Routes.EVENTS_ID));
+        add(Pair.of(HttpMethod.GET, Routes.EVENTS_USER_ID));
+        add(Pair.of(HttpMethod.GET, Routes.EVENTS_GROUP_ID));
+        add(Pair.of(HttpMethod.POST, Routes.EVENTS));
+        add(Pair.of(HttpMethod.PUT, Routes.EVENTS_ID));
+        add(Pair.of(HttpMethod.DELETE, Routes.EVENTS_ID));
     }};
 
     private static final Set<Pair<HttpMethod, String>> managerRoutes = new HashSet<>(){{
         addAll(employeeRoutes);
-        add(Pair.of(HttpMethod.POST, Routes.GROUPS));
     }};
 
     private static final Set<Pair<HttpMethod, String>> adminRoutes = new HashSet<>(){{
         addAll(managerRoutes);
         add(Pair.of(HttpMethod.POST, Routes.USERS));
-        add(Pair.of(HttpMethod.GET, Routes.USERS));
         add(Pair.of(HttpMethod.DELETE, Routes.USERS_ID));
+
+        add(Pair.of(HttpMethod.POST, Routes.GROUPS));
+        add(Pair.of(HttpMethod.PUT, Routes.GROUPS_ID));
+        add(Pair.of(HttpMethod.DELETE, Routes.GROUPS_ID));
     }};
 
     @Override
@@ -56,33 +71,36 @@ public class RouteFilter extends OncePerRequestFilter {
         User user = CommonUtils.getLoggedUser(httpServletRequest);
 
         if (user == null) {
-            AuthorizeRequest(httpServletRequest, anonymousRoutes);
-        }
-        else if (user.getRole().equals(Role.EMPLOYEE)) {
-            AuthorizeRequest(httpServletRequest, employeeRoutes);
-        }
-        else if (user.getRole().equals(Role.MANAGER)) {
-            AuthorizeRequest(httpServletRequest, managerRoutes);
-        }
-        else if (user.getRole().equals(Role.ADMINISTRATOR)) {
-            AuthorizeRequest(httpServletRequest, adminRoutes);
-        }
-        else {
+            if (!isRequestValid(httpServletRequest, anonymousRoutes)) {
+                throw UnauthorizedException.create();
+            }
+        } else if (Role.EMPLOYEE.equals(user.getRole())) {
+            if (!isRequestValid(httpServletRequest, employeeRoutes)) {
+                throw ForbiddenException.create();
+            }
+        } else if (Role.MANAGER.equals(user.getRole())) {
+            if (!isRequestValid(httpServletRequest, managerRoutes)) {
+                throw ForbiddenException.create();
+            }
+        } else if (Role.ADMINISTRATOR.equals(user.getRole())) {
+            if (!isRequestValid(httpServletRequest, adminRoutes)) {
+                throw ForbiddenException.create();
+            }
+        } else {
             throw ForbiddenException.create();
         }
 
         filterChain.doFilter(httpServletRequest, httpServletResponse);
     }
 
-    private void AuthorizeRequest(HttpServletRequest httpServletRequest, Set<Pair<HttpMethod, String>> routes) {
+    private boolean isRequestValid(HttpServletRequest httpServletRequest, Set<Pair<HttpMethod, String>> routes) {
         for (Pair<HttpMethod, String> route: routes) {
             if (antPathMatcher.match(route.getSecond(), getRequestUri(httpServletRequest))
                     && antPathMatcher.match(String.valueOf(route.getFirst()), httpServletRequest.getMethod())) {
-                return;
+                return true;
             }
         }
-
-        throw ForbiddenException.create();
+        return false;
     }
 
     private String getRequestUri(HttpServletRequest httpServletRequest) {

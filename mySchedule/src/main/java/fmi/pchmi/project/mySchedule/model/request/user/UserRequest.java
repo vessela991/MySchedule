@@ -16,4 +16,5 @@ public class UserRequest {
     private String userInfo;
     private String gender;
     private String role;
+    private String groupId;
 }

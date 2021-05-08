@@ -19,49 +19,53 @@ public class UserValidator {
     public static final Pattern PASSWORD_PATTERN = Pattern.compile(PASSWORD_REGEX);
 
     public ValidationResult validateUserRequest(UserRequest userRequest) {
-        if (userRequest.getUsername() == null) {
-                return ValidationResult.failure(ExceptionMessages.NO_USERNAME);
+        if (userRequest.getUsername() == null || userRequest.getUsername().isBlank()) {
+                return ValidationResult.failure(ExceptionMessages.USER_NO_USERNAME);
         }
 
-        if (userRequest.getUsername().length() < DatabaseConstants.USERNAME_MIN
-                || userRequest.getUsername().length() > DatabaseConstants.USERNAME_MAX) {
-            return ValidationResult.failure(ExceptionMessages.USERNAME_OUT_OF_RANGE);
+        if (userRequest.getUsername().length() < DatabaseConstants.USER_USERNAME_MIN
+                || userRequest.getUsername().length() > DatabaseConstants.USER_USERNAME_MAX) {
+            return ValidationResult.failure(ExceptionMessages.USER_USERNAME_OUT_OF_RANGE);
         }
 
-        if (userRequest.getPassword() == null) {
-            return ValidationResult.failure(ExceptionMessages.NO_PASSWORD);
+        if (userRequest.getPassword() == null || userRequest.getPassword().isBlank()) {
+            return ValidationResult.failure(ExceptionMessages.USER_NO_PASSWORD);
         }
 
         if (!PASSWORD_PATTERN.matcher(userRequest.getPassword()).matches()) {
-            return ValidationResult.failure(ExceptionMessages.PASSWORD_REGEX_DOES_NOT_MATCH);
+            return ValidationResult.failure(ExceptionMessages.USER_PASSWORD_REGEX_DOES_NOT_MATCH);
         }
 
-        if (userRequest.getEmail() == null) {
-            return ValidationResult.failure(ExceptionMessages.NO_EMAIL);
+        if (userRequest.getEmail() == null || userRequest.getEmail().isBlank()) {
+            return ValidationResult.failure(ExceptionMessages.USER_NO_EMAIL);
         }
 
         if (!EMAIL_PATTERN.matcher(userRequest.getEmail()).matches()) {
-             return ValidationResult.failure(ExceptionMessages.EMAIL_IS_INVALID);
+             return ValidationResult.failure(ExceptionMessages.USER_EMAIL_IS_INVALID);
         }
 
         if (userRequest.getGender() == null) {
-            return ValidationResult.failure(ExceptionMessages.NO_GENDER);
+            return ValidationResult.failure(ExceptionMessages.USER_NO_GENDER);
         }
 
         if (!CommonUtils.DoesEnumContain(Gender.class, userRequest.getGender())) {
-            return ValidationResult.failure(ExceptionMessages.WRONG_GENDER);
+            return ValidationResult.failure(ExceptionMessages.USER_WRONG_GENDER);
         }
 
         if (userRequest.getRole() == null) {
-            return ValidationResult.failure(ExceptionMessages.NO_ROLE);
+            return ValidationResult.failure(ExceptionMessages.USER_NO_ROLE);
         }
 
         if (!CommonUtils.DoesEnumContain(Role.class, userRequest.getRole())) {
-            return ValidationResult.failure(ExceptionMessages.WRONG_ROLE);
+            return ValidationResult.failure(ExceptionMessages.USER_WRONG_ROLE);
         }
 
         if (userRequest.getUserInfo() != null && userRequest.getUserInfo().length() > DatabaseConstants.USER_INFO_MAX) {
             return ValidationResult.failure(ExceptionMessages.USER_INFO_TOO_LONG);
+        }
+
+        if (userRequest.getGroupId() == null || userRequest.getGroupId().isBlank()) {
+            return ValidationResult.failure(ExceptionMessages.USER_MUST_HAVE_GROUP_ID);
         }
 
         return ValidationResult.success();

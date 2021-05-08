@@ -1,15 +1,15 @@
-package fmi.pchmi.project.mySchedule.model.request.group;
+package fmi.pchmi.project.mySchedule.model.database.event;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class GroupMembersRequest {
-    private List<String> memberIds;
+public class EventParticipant {
+    private String userId;
+    private EventStatus status;
 }

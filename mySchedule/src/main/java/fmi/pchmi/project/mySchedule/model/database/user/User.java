@@ -8,6 +8,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -24,11 +25,11 @@ public class User {
 
     @Column(unique = true)
     @NotNull(message = "Username cannot be empty")
-    @Size(min = DatabaseConstants.USERNAME_MIN, max = DatabaseConstants.USERNAME_MAX)
+    @Size(min = DatabaseConstants.USER_USERNAME_MIN, max = DatabaseConstants.USER_USERNAME_MAX)
     private String username;
 
     @NotNull(message = "Password cannot be empty")
-    @Size(min = DatabaseConstants.PASSWORD_MIN, max = DatabaseConstants.PASSWORD_MAX)
+    @Size(min = DatabaseConstants.USER_PASSWORD_MIN, max = DatabaseConstants.USER_PASSWORD_MAX)
     private String password;
 
     @Column(unique = true)
@@ -47,4 +48,10 @@ public class User {
 
     @Column(length = Integer.MAX_VALUE)
     private String picture;
+
+    @NotNull(message = "GroupId cannot be null")
+    private String groupId;
+
+    @ElementCollection(targetClass=String.class)
+    private Set<String> eventIds;
 }

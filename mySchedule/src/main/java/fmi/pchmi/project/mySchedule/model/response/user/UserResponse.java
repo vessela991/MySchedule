@@ -16,21 +16,25 @@ import java.util.Collection;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserResponse {
+    private String id;
     private String username;
     private String email;
     private String userInfo;
     private Gender gender;
     private Role role;
     private String picture;
+    private String groupId;
 
     public static UserResponse fromUser(User user) {
         UserResponse userResponse = new UserResponse();
+        userResponse.setId(user.getId());
         userResponse.setUsername(user.getUsername());
         userResponse.setEmail(user.getEmail());
         userResponse.setUserInfo(user.getUserInfo());
         userResponse.setGender(user.getGender());
         userResponse.setRole(user.getRole());
         userResponse.setPicture(user.getPicture());
+        userResponse.setGroupId(user.getGroupId());
         return userResponse;
     }
 

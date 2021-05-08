@@ -11,7 +11,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
-public class AdminInitializer implements ApplicationRunner {
+public class ApplicationInitializer implements ApplicationRunner {
     @Autowired
     private UserRepository userRepository;
 
@@ -20,7 +20,7 @@ public class AdminInitializer implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) {
-        if (!userRepository.findByUsername("admin").isPresent()) {
+        if (userRepository.findByUsername("admin") == null) {
             User user = new User();
             user.setUsername("admin");
             user.setPassword(passwordEncoder.encode("Admin1234!"));

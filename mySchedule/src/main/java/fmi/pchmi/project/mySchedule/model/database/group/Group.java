@@ -5,7 +5,7 @@ import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -22,14 +22,7 @@ public class Group {
     private String name;
 
     @ElementCollection(targetClass=String.class)
-    private List<String> members;
-    private String creatorId;
+    private Set<String> members;
+    private String managerId;
 
-    public static Group fromGroupRequest(GroupRequest groupRequest, String creatorId) {
-        Group group = new Group();
-        group.setName(groupRequest.getName());
-        group.setMembers(groupRequest.getMembers());
-        group.setCreatorId(creatorId);
-        return group;
-    }
 }

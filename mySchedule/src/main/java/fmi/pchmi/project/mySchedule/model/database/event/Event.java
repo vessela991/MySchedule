@@ -1,11 +1,15 @@
 package fmi.pchmi.project.mySchedule.model.database.event;
 
+import fmi.pchmi.project.mySchedule.internal.constants.DatabaseConstants;
+import fmi.pchmi.project.mySchedule.model.database.user.User;
+import fmi.pchmi.project.mySchedule.model.request.event.EventUpdateRequest;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.util.Date;
-import java.util.List;
+import javax.validation.constraints.Size;
+import java.time.Instant;
+import java.util.*;
 
 @Getter
 @Setter
@@ -19,14 +23,17 @@ public class Event {
     @GeneratedValue(generator="system-uuid")
     @GenericGenerator(name="system-uuid", strategy = "uuid")
     private String id;
+    @Size(min = DatabaseConstants.EVENT_NAME_MIN, max = DatabaseConstants.EVENT_NAME_MAX)
     private String name;
+    @Size(max = DatabaseConstants.EVENT_DESCRIPTION_MAX)
     private String description;
     private Date creationTime;
     private Date startTime;
     private Date endTime;
 
     @ElementCollection(targetClass=String.class)
-    private List<String> participants;
+    private Set<EventParticipant> participants;
     private String creatorId;
-    private Priority priority;
+    private Priority priority = Priority.LOW;
+    private boolean isPersonal;
 }
