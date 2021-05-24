@@ -30,16 +30,6 @@ public class EventController {
         return new ResponseEntity<>(eventService.getEventById(eventId), HttpStatus.OK);
     }
 
-    @GetMapping(Routes.EVENTS_USER_ID)
-    public ResponseEntity<Collection<Event>> getAllEventsForUser(@PathVariable("id") String userId) {
-        return new ResponseEntity<>(eventService.getAllEventsForUser(userId), HttpStatus.OK);
-    }
-
-    @GetMapping(Routes.EVENTS_GROUP_ID)
-    public ResponseEntity<Collection<Event>> getAllEventsForGroup(@PathVariable("id") String groupId) {
-        return new ResponseEntity<>(eventService.getAllEventsForGroup(groupId), HttpStatus.OK);
-    }
-
     @PostMapping(Routes.EVENTS)
     public ResponseEntity<Event> createEvent(@RequestBody EventCreateRequest eventCreateRequest,
                                              @RequestAttribute(CommonConstants.LOGGED_USER) User loggedUser) {

@@ -1,6 +1,7 @@
 package fmi.pchmi.project.mySchedule.controller;
 
 import fmi.pchmi.project.mySchedule.internal.constants.Routes;
+import fmi.pchmi.project.mySchedule.model.database.event.Event;
 import fmi.pchmi.project.mySchedule.model.database.group.Group;
 import fmi.pchmi.project.mySchedule.model.request.group.GroupRequest;
 import fmi.pchmi.project.mySchedule.model.request.group.GroupUpdateRequest;
@@ -26,6 +27,11 @@ public class GroupController {
     @GetMapping(Routes.GROUPS_ID)
     public ResponseEntity<Group> getGroupById(@PathVariable("id") String groupId) {
         return new ResponseEntity<>(groupService.getGroupById(groupId), HttpStatus.OK);
+    }
+
+    @GetMapping(Routes.GROUP_ID_EVENTS)
+    public ResponseEntity<Collection<Event>> getAllEventsForGroup(@PathVariable("id") String groupId) {
+        return new ResponseEntity<>(groupService.getAllEventsForGroup(groupId), HttpStatus.OK);
     }
 
     @PostMapping(Routes.GROUPS)

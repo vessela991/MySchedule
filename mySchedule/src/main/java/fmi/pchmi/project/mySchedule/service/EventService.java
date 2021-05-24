@@ -45,28 +45,6 @@ public class EventService {
         return eventRepositoryHelper.findById(eventId);
     }
 
-    public Collection<Event> getAllEventsForUser(String userId) {
-        return eventRepositoryHelper.findAllByUserId(userId);
-    }
-
-    public Collection<Event> getAllEventsForGroup(String groupId) {
-        Group group = groupRepositoryHelper.findById(groupId);
-
-        Set<Event> groupEvents = new HashSet<>();
-
-        for (String memberId : group.getMembers()) {
-            User user = userRepositoryHelper.findById(memberId);
-            for (String eventId : user.getEventIds()) {
-                Event event = eventRepositoryHelper.findById(eventId);
-                if (!event.isPersonal()) {
-                    groupEvents.add(event);
-                }
-            }
-        }
-
-        return groupEvents;
-    }
-
     public Event createEvent(EventCreateRequest eventCreateRequest, User loggedUser) {
         validateEventRequest(eventCreateRequest);
 

@@ -43,8 +43,8 @@ public class RouteFilter extends OncePerRequestFilter {
 
         add(Pair.of(HttpMethod.GET, Routes.EVENTS));
         add(Pair.of(HttpMethod.GET, Routes.EVENTS_ID));
-        add(Pair.of(HttpMethod.GET, Routes.EVENTS_USER_ID));
-        add(Pair.of(HttpMethod.GET, Routes.EVENTS_GROUP_ID));
+        add(Pair.of(HttpMethod.GET, Routes.USER_ID_EVENTS));
+        add(Pair.of(HttpMethod.GET, Routes.GROUP_ID_EVENTS));
         add(Pair.of(HttpMethod.POST, Routes.EVENTS));
         add(Pair.of(HttpMethod.PUT, Routes.EVENTS_ID));
         add(Pair.of(HttpMethod.DELETE, Routes.EVENTS_ID));

@@ -1,6 +1,7 @@
 package fmi.pchmi.project.mySchedule.service;
 
 import fmi.pchmi.project.mySchedule.internal.constants.ExceptionMessages;
+import fmi.pchmi.project.mySchedule.model.database.event.Event;
 import fmi.pchmi.project.mySchedule.model.database.group.Group;
 import fmi.pchmi.project.mySchedule.model.exception.ForbiddenException;
 import fmi.pchmi.project.mySchedule.model.exception.InternalException;
@@ -14,6 +15,7 @@ import fmi.pchmi.project.mySchedule.model.request.user.UserEditRequest;
 import fmi.pchmi.project.mySchedule.model.request.user.UserRequest;
 import fmi.pchmi.project.mySchedule.model.response.user.UserResponse;
 import fmi.pchmi.project.mySchedule.repository.GroupRepository;
+import fmi.pchmi.project.mySchedule.repository.helper.EventRepositoryHelper;
 import fmi.pchmi.project.mySchedule.repository.helper.GroupRepositoryHelper;
 import fmi.pchmi.project.mySchedule.repository.helper.UserRepositoryHelper;
 import fmi.pchmi.project.mySchedule.validator.UserValidator;
@@ -39,6 +41,9 @@ public class UserService {
     private GroupRepositoryHelper groupRepositoryHelper;
 
     @Autowired
+    private EventRepositoryHelper eventRepositoryHelper;
+
+    @Autowired
     private UserValidator userValidator;
 
     @Autowired
@@ -54,6 +59,10 @@ public class UserService {
     public UserResponse getUserById(String userId) {
         User user = userRepositoryHelper.findById(userId);
         return UserResponse.fromUser(user);
+    }
+
+    public Collection<Event> getAllEventsForUser(String userId) {
+        return eventRepositoryHelper.findAllByUserId(userId);
     }
 
     public UserResponse createUser(UserRequest userRequest) {

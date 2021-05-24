@@ -2,12 +2,14 @@ package fmi.pchmi.project.mySchedule.service;
 
 import fmi.pchmi.project.mySchedule.internal.CommonUtils;
 import fmi.pchmi.project.mySchedule.internal.constants.ExceptionMessages;
+import fmi.pchmi.project.mySchedule.model.database.event.Event;
 import fmi.pchmi.project.mySchedule.model.database.group.Group;
 import fmi.pchmi.project.mySchedule.model.database.user.User;
 import fmi.pchmi.project.mySchedule.model.exception.ValidationException;
 import fmi.pchmi.project.mySchedule.model.request.group.GroupRequest;
 import fmi.pchmi.project.mySchedule.model.request.group.GroupUpdateRequest;
 import fmi.pchmi.project.mySchedule.model.validation.ValidationResult;
+import fmi.pchmi.project.mySchedule.repository.helper.EventRepositoryHelper;
 import fmi.pchmi.project.mySchedule.repository.helper.GroupRepositoryHelper;
 import fmi.pchmi.project.mySchedule.repository.helper.UserRepositoryHelper;
 import fmi.pchmi.project.mySchedule.validator.GroupValidator;
@@ -15,6 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 @Service
 public class GroupService {
@@ -26,6 +30,9 @@ public class GroupService {
     private UserRepositoryHelper userRepositoryHelper;
 
     @Autowired
+    private EventRepositoryHelper eventRepositoryHelper;
+
+    @Autowired
     private GroupValidator groupValidator;
 
     public Collection<Group> getAllGroups() {
@@ -34,6 +41,24 @@ public class GroupService {
 
     public Group getGroupById(String groupId) {
         return groupRepositoryHelper.findById(groupId);
+    }
+
+    public Collection<Event> getAllEventsForGroup(String groupId) {
+        Group group = groupRepositoryHelper.findById(groupId);
+
+        Set<Event> groupEvents = new HashSet<>();
+
+        for (String memberId : group.getMembers()) {
+            User user = userRepositoryHelper.findById(memberId);
+            for (String eventId : user.getEventIds()) {
+                Event event = eventRepositoryHelper.findById(eventId);
+                if (!event.isPersonal()) {
+                    groupEvents.add(event);
+                }
+            }
+        }
+
+        return groupEvents;
     }
 
     public Group createGroup(GroupRequest groupRequest) {

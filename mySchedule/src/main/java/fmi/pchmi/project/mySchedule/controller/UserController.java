@@ -2,6 +2,7 @@ package fmi.pchmi.project.mySchedule.controller;
 
 import fmi.pchmi.project.mySchedule.internal.constants.CommonConstants;
 import fmi.pchmi.project.mySchedule.internal.constants.Routes;
+import fmi.pchmi.project.mySchedule.model.database.event.Event;
 import fmi.pchmi.project.mySchedule.model.database.user.User;
 import fmi.pchmi.project.mySchedule.model.request.user.UserEditRequest;
 import fmi.pchmi.project.mySchedule.model.request.user.UserRequest;
@@ -28,6 +29,11 @@ public class UserController {
     @GetMapping(Routes.USERS_ID)
     public ResponseEntity<UserResponse> getUserById(@PathVariable("id") String userId) {
         return new ResponseEntity<>(userService.getUserById(userId), HttpStatus.OK);
+    }
+
+    @GetMapping(Routes.USER_ID_EVENTS)
+    public ResponseEntity<Collection<Event>> getAllEventsForUser(@PathVariable("id") String userId) {
+        return new ResponseEntity<>(userService.getAllEventsForUser(userId), HttpStatus.OK);
     }
 
     @PostMapping(Routes.USERS)
