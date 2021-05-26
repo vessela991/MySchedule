@@ -18,11 +18,16 @@ export class UserService {
       'Authorization': `Bearer ${this.auth.getToken()}`
     })
   };
-  private userPath = environment.apiUrl + 'users';
+  private userPath = environment.apiUrl + '/users';
+  private userPathById = this.userPath + '/';
 
   constructor(private http:HttpClient, private auth: AuthService) { }
 
-  getUser(): Observable<UserGet>{
-      return this.http.get<UserGet>(this.userPath, this.options);
+  getAllUsers(): Observable<Array<UserGet>>{
+      return this.http.get<Array<UserGet>>(this.userPath, this.options);
+  }
+
+  getUserById(id): Observable<UserGet> {
+    return this.http.get<UserGet>(this.userPathById + id, this.options);
   }
 }

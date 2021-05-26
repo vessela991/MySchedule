@@ -10,6 +10,8 @@ import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -24,6 +26,7 @@ public class UserResponse {
     private Role role;
     private String picture;
     private String groupId;
+    private Set<String> eventIds;
 
     public static UserResponse fromUser(User user) {
         UserResponse userResponse = new UserResponse();
@@ -35,6 +38,7 @@ public class UserResponse {
         userResponse.setRole(user.getRole());
         userResponse.setPicture(user.getPicture());
         userResponse.setGroupId(user.getGroupId());
+        userResponse.setEventIds(user.getEventIds());
         return userResponse;
     }
 

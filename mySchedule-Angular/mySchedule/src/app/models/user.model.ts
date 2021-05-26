@@ -1,12 +1,5 @@
-export class User{ 
-    id: string;
-    username: string;
+import { UserGet } from "./user-get.model";
+
+export class User extends UserGet{ 
     password: string;
-    email: string;
-    userInfo: string;
-    gender: string;
-    role: string;
-    picture: string;
-    groupId: string;
-    eventIds: string[];
 }

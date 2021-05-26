@@ -17,11 +17,15 @@ export class GroupService {
       'Authorization': `Bearer ${this.auth.getToken()}`
     })
   };
-  private groupPath = environment.apiUrl + 'groups';
+  private groupPath = environment.apiUrl + '/groups';
 
   constructor(private http:HttpClient, private auth: AuthService) { }
 
   getGroupById(id): Observable<Group>{
       return this.http.get<Group>(this.groupPath + "/" + id, this.options);
   }
+
+  getAllGroups(): Observable<Array<Group>>{
+    return this.http.get<Array<Group>>(this.groupPath, this.options);
+}
 }

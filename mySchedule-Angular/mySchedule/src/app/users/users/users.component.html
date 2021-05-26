@@ -1,0 +1,12 @@
+<div class="d-flex m-3 flex-row" *ngIf="users !== undefined">
+    <div *ngFor="let user of users">
+        <div class="card text-center m-3" style="width:18rem;">
+            <div class="card-body">
+              <h5 class="card-title">{{user.username}}</h5>
+              <p class="card-text"></p>
+              <button class="btn btn-primary" (click)="viewUserProfile(user.id)">View profile</button>
+              <button class="btn btn-primary" *ngIf="isAdmin()" (click)="editUser(user)">Edit user</button>
+            </div>
+          </div>
+    </div>
+</div>

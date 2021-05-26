@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http'
 import { Observable } from 'rxjs';
 import { Login } from '../models/login.model';
 import { environment } from '../../environments/environment';
-import jwt_decode from 'jwt-decode';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -27,8 +27,9 @@ export class AuthService {
     return localStorage.getItem('token');
   }
 
-  getDecodedToken(): any {
-    return jwt_decode(this.getToken()); 
+  getLoggedUserId(): string {
+    let payload: any = JSON.parse(atob(this.getToken().split('.')[1]));
+    return payload.userId;
   }
   
   isLogged(){
