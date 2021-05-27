@@ -41,7 +41,7 @@ export class AuthService {
   }
 
   getLoggedUserId(): string {
-    if(this.isLogged) {
+    if(this.isLogged()) {
       let payload = JSON.parse(atob(this.getToken().split('.')[1]));
       return payload.userId;
     }

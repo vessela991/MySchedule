@@ -9,12 +9,6 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserRequest {
-    private String username;
+public class UserRequest extends UserGetRequest {
     private String password;
-    private String email;
-    private String userInfo;
-    private String gender;
-    private String role;
-    private String groupId;
 }

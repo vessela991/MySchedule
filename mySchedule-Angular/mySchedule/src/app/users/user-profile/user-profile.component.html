@@ -1,7 +1,6 @@
 <div class="d-flex justify-content-center m-3" *ngIf="user != undefined">
     <div class="card m-3 border-none" style="width: 18rem;">
         <img src='{{"data:image/jpeg;base64," + user.picture}}' class="card-img-top" alt="...">
-        <!-- {'fa-eye-slash': !isPasswordVisible, 'fa-eye': isPasswordVisible} -->
         <div class="card-body">
           <h5 class="card-title">{{user.username}}</h5>
           <ul class="list-group list-group-flush">

@@ -1,1 +1,75 @@
-<p>group-edit works!</p>
+<p>group edit works!</p>
+<!-- <form *ngIf="group !== undefined" class="d-flex flex-column justify-content-center align-items-center w-75 mx-auto my-4" [formGroup]="editGroupForm">
+
+    <input *ngIf="isAdmin()" type="text" readonly class="form-control w-50 mb-2" [ngModel]="user.id" placeholder="Id" formControlName="id">
+
+    <input *ngIf="isAdmin()" type="text" class="form-control w-50 mb-2" [(ngModel)]="user.username" placeholder="Username" formControlName="username">
+
+    <div class="alert alert-danger w-50 mb-2" *ngIf="username.touched && username.errors?.required">
+        This field is required!
+    </div>
+
+    <input *ngIf="isAdmin()" type="email" [(ngModel)]="user.email" class="form-control w-50 mb-2" placeholder="Email" formControlName="email">
+
+    <div class="alert alert-danger w-50 mb-2" *ngIf="email.touched && email.errors?.required">
+        This field is required!
+    </div>
+
+    <div *ngIf="isAdmin()" class="d-flex align-items-center w-50 mb-2">
+        <label class="input-group-text me-auto">Gender</label>
+        <div class="d-flex justify-content-between w-75">
+            <div class="form-check w-25">
+                <input type="radio" class="form-check-input" [(ngModel)]="user.gender" value="MALE" formControlName="gender" id="male">
+                <label class="form-check-label" for="male">Male</label>
+            </div>
+            <div class="form-check w-25">
+                <input type="radio" class="form-check-input" [(ngModel)]="user.gender" value="FEMALE" formControlName="gender" id="female">
+                <label class="form-check-label" for="female">Female</label>
+            </div>
+            <div class="form-check w-25">
+                <input type="radio" class="form-check-input" [(ngModel)]="user.gender" value="OTHER" formControlName="gender" id="other">
+                <label class="form-check-label" for="other">Other</label>
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="isAdmin()" class="d-flex align-items-center w-50 mb-2">
+        <label class="input-group-text me-auto">Role</label>
+        <div class="d-flex justify-content-between w-75">
+            <div class="form-check w-25">
+                <input type="radio" class="form-check-input" [(ngModel)]="user.role" value="ADMINISTRATOR" formControlName="role" id="administrator">
+                <label class="form-check-label" for="administrator">Administrator</label>
+            </div>
+            <div class="form-check w-25">
+                <input type="radio" class="form-check-input" [(ngModel)]="user.role" value="MANAGER" formControlName="role" id="manager">
+                <label class="form-check-label" for="manager">Manager</label>
+            </div>
+            <div class="form-check w-25">
+                <input type="radio" class="form-check-input" [(ngModel)]="user.role" value="EMPLOYEE" formControlName="role" id="employee">
+                <label class="form-check-label" for="employee">Employee</label>
+            </div>
+        </div>
+    </div>
+
+    <div class="input-group w-50 mb-2">
+        <label class="input-group-text" for="uploadPicture">Upload picture</label>
+        <input type="file" formControlName="picture" class="form-control" id="uploadPicture">
+    </div>
+
+    <div *ngIf="isAdmin()" class="d-flex align-items-center w-50 mb-2">
+        <label class="input-group-text me-auto" for="inputGroupId">Group</label>
+        <select [(ngModel)]="user.groupId" id="inputGroupId" formControlName="groupId" class="form-select w-75">
+            <option *ngFor="let group of groups" value="{{group.id}}">{{group.name}}</option>
+        </select>
+    </div>
+
+    <textarea class="form-control w-50 mb-2" [(ngModel)]="user.userInfo" placeholder="UserInfo" formControlName="userInfo" cols="10" rows="3"></textarea>
+
+    <div class="alert alert-danger mb-3 w-50" *ngIf="errorMessage != null">
+        {{errorMessage}}
+    </div>
+
+    <button type="submit" class="btn btn-primary" (click)="editUser()">
+        Edit User
+    </button>
+</form> -->

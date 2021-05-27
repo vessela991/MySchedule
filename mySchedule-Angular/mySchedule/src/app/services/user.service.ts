@@ -32,4 +32,8 @@ export class UserService {
   createUser(user): Promise<UserGet> {
     return this.http.post<UserGet>(this.userPath, user, this.authService.getAuthorizationOptions()).toPromise();
   }
+
+  editUser(user): Promise<UserGet> {
+    return this.http.put<UserGet>(this.userPath + "/" + user.id, user, this.authService.getAuthorizationOptions()).toPromise();
+  }
 }

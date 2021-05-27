@@ -19,6 +19,7 @@ import { ToastrModule } from 'ngx-toastr';
 import { UserEditComponent } from './users/user-edit/user-edit.component';
 import { GroupEditComponent } from './group/group-edit/group-edit.component';
 import { GroupViewComponent } from './group/group-view/group-view.component';
+import { FooterComponent } from './footer/footer.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -33,7 +34,8 @@ import { GroupViewComponent } from './group/group-view/group-view.component';
     GroupCreateComponent,
     UserEditComponent,
     GroupEditComponent,
-    GroupViewComponent
+    GroupViewComponent,
+    FooterComponent
   ],
   imports: [
     BrowserAnimationsModule,

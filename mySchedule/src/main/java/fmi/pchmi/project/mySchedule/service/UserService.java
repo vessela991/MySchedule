@@ -7,6 +7,7 @@ import fmi.pchmi.project.mySchedule.model.exception.ForbiddenException;
 import fmi.pchmi.project.mySchedule.model.exception.InternalException;
 import fmi.pchmi.project.mySchedule.model.exception.ValidationException;
 import fmi.pchmi.project.mySchedule.internal.CommonUtils;
+import fmi.pchmi.project.mySchedule.model.request.user.UserGetRequest;
 import fmi.pchmi.project.mySchedule.model.validation.ValidationResult;
 import fmi.pchmi.project.mySchedule.model.database.user.Gender;
 import fmi.pchmi.project.mySchedule.model.database.user.Role;
@@ -104,7 +105,10 @@ public class UserService {
             throw ForbiddenException.create();
         }
 
-        ValidateUserRequest(userEditRequest);
+        ValidationResult validationResult = userValidator.validateUserRequest(userEditRequest);
+        if (!validationResult.isSuccess()) {
+            throw ValidationException.create(validationResult.getValidationError());
+        }
 
         // highly unlikely to throw exception here, but still a valid case
         User userToEdit = userRepositoryHelper.findById(userId);
@@ -119,7 +123,7 @@ public class UserService {
 
         if (loggedUser.getRole().equals(Role.ADMINISTRATOR)) {
             userToEdit.setUsername(userEditRequest.getUsername());
-            userToEdit.setPassword(passwordEncoder.encode(userEditRequest.getPassword()));
+//            userToEdit.setPassword(passwordEncoder.encode(userEditRequest.getPassword()));
             userToEdit.setEmail(userEditRequest.getEmail());
             userToEdit.setGender(Gender.valueOf(userEditRequest.getGender()));
             userToEdit.setRole(Role.valueOf(userEditRequest.getRole()));
