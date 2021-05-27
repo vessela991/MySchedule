@@ -12,7 +12,7 @@ export class LoginComponent {
 
   loginForm: FormGroup;
   errorMessage: string;
-  isPasswordVisible: boolean = true;
+  isPasswordVisible: boolean = false;
   
   constructor(private navigatorService: NavigatorService, private formBuilder: FormBuilder, private authService: AuthService) {
     this.loginForm = this.formBuilder.group({

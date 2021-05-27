@@ -18,6 +18,8 @@ import fmi.pchmi.project.mySchedule.repository.helper.GroupRepositoryHelper;
 import fmi.pchmi.project.mySchedule.repository.helper.UserRepositoryHelper;
 import fmi.pchmi.project.mySchedule.validator.EventValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -33,6 +35,9 @@ public class EventService {
 
     @Autowired
     private GroupRepositoryHelper groupRepositoryHelper;
+
+    @Autowired
+    private JavaMailSender javaMailSender;
 
     @Autowired
     private EventValidator eventValidator;
@@ -141,7 +146,7 @@ public class EventService {
                     continue;
                 }
                 eventParticipantCollection.add(new EventParticipant(participantId, EventStatus.PENDING));
-                sendParticipantEmail(participantId);
+                sendParticipantEmail(participantId, eventUpdateRequest.getName());
             }
         }
         return eventParticipantCollection;
@@ -212,6 +217,15 @@ public class EventService {
 //        }
 //    }
 
-    private void sendParticipantEmail(String participantId) {
+    private void sendParticipantEmail(String participantId, String eventName) {
+        User participant = this.userRepositoryHelper.findById(participantId);
+
+        SimpleMailMessage msg = new SimpleMailMessage();
+        msg.setTo(participant.getEmail());
+
+        msg.setSubject("Invitation for event: " + eventName);
+        msg.setText("Hello you have been invited to participate in the event: " + eventName);
+
+        javaMailSender.send(msg);
     }
 }
