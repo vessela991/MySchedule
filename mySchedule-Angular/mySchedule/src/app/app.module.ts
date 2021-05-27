@@ -13,7 +13,12 @@ import { UsersComponent } from './users/users/users.component';
 import { UserProfileComponent } from './users/user-profile/user-profile.component';
 import { UserCreateComponent } from './users/user-create/user-create.component';
 import { NavigationComponent } from './navigarion/navigation/navigation.component';
-
+import { GroupCreateComponent } from './group/group-create/group-create.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ToastrModule } from 'ngx-toastr';
+import { UserEditComponent } from './users/user-edit/user-edit.component';
+import { GroupEditComponent } from './group/group-edit/group-edit.component';
+import { GroupViewComponent } from './group/group-view/group-view.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -24,9 +29,15 @@ import { NavigationComponent } from './navigarion/navigation/navigation.componen
     UsersComponent,
     UserProfileComponent,
     UserCreateComponent,
-    NavigationComponent
+    NavigationComponent,
+    GroupCreateComponent,
+    UserEditComponent,
+    GroupEditComponent,
+    GroupViewComponent
   ],
   imports: [
+    BrowserAnimationsModule,
+    ToastrModule.forRoot(),
     BrowserModule,
     AppRoutingModule,
     ReactiveFormsModule,

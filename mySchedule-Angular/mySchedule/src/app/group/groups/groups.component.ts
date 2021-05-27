@@ -1,12 +1,8 @@
-import { trigger } from '@angular/animations';
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 import { Group } from 'src/app/models/group.model';
-import { UserGet } from 'src/app/models/user-get.model';
-import { User } from 'src/app/models/user.model';
 import { AuthService } from 'src/app/services/auth.service';
 import { GroupService } from 'src/app/services/group.service';
-import { UserService } from 'src/app/services/user.service';
+import { NavigatorService } from 'src/app/services/navigator.service';
 
 @Component({
   selector: 'app-groups',
@@ -15,41 +11,27 @@ import { UserService } from 'src/app/services/user.service';
 })
 export class GroupsComponent implements OnInit {
 
-  constructor(private groupService: GroupService, private auth: AuthService, private userService: UserService, private router: Router) {
-  }
+  public groups: Array<Group>;
 
-  groups: Array<Group>;
-  loggedUser: UserGet;
+  constructor(private groupService: GroupService, private authService: AuthService, private navigatorService: NavigatorService) {}
 
-  ngOnInit(): void {
-    this.getAllGroups();
-
-    this.userService.getUserById(this.auth.getLoggedUserId()).subscribe(data => {
-      this.loggedUser = data;      
-    });
-}
-  getAllGroups() {
-    this.groupService.getAllGroups().subscribe(data => {
-        this.groups = data;
-    })
+  async ngOnInit() {
+    this.groups = await this.groupService.getAllGroups();
   }
 
   isAdminOrManager(group: Group): boolean {
-    if (this.loggedUser === undefined) {
-      return false;
-    }
-    
-    if (this.loggedUser.role === 'ADMINISTRATOR') {
-      return true;
-    }
-
-    if (this.loggedUser.role === 'MANAGER' && group.managerId === this.loggedUser.id) {
-      return true;
-    }
-    return false;
+    return this.authService.isAdminOrManager(group.managerId);
   }
 
   handleGroupSchedule(groupId) {
-    this.router.navigate(["/schedules/groups/" + groupId]);
+    this.navigatorService.navigate("/schedules/groups/" + groupId);
+  }
+
+  editGroupSchedule(groupId) {
+    this.navigatorService.navigate("/groups/" + groupId + '/edit');
+  }
+
+  viewGroup(groupId) {
+    this.navigatorService.navigate("/groups/" + groupId);
   }
 }

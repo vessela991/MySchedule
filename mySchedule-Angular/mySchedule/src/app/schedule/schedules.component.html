@@ -1,18 +1,21 @@
 
-<div class="d-flex m-3">
+<div class="d-flex justify-content-center m-3">
   <div class="card text-center m-3" style="width:18rem;" *ngIf="group !== undefined">
     <div class="card-body">
       <h5 class="card-title">{{group.name}}</h5>
       <p class="card-text">Group schedule</p>
-      <button class="btn btn-primary" (click)="handleGroupSchedule()">View schedule</button>
+      <div class="d-flex justify-content-center flex-column">
+        <button class="btn btn-primary btn-sm" (click)="handleGroupSchedule()">View schedule</button>
+      </div>
     </div>
   </div>
   <div class="card text-center m-3" style="width:18rem;" *ngIf="user !== undefined">
     <div class="card-body">
       <h5 class="card-title">{{user.username}}</h5>
       <p class="card-text">Personal schedule</p>
-      <button class="btn btn-primary" (click)="handlePersonalSchedule()">View schedule</button>
-      <!-- <a href="/schedules/users/" class="btn btn-primary" onsubmit="handlePersonalSchedule()">View schedule</a> -->
+      <div class="d-flex justify-content-center flex-column">
+        <button class="btn btn-primary btn-sm" (click)="handlePersonalSchedule()">View schedule</button>
+      </div>
     </div>
   </div>
 </div>

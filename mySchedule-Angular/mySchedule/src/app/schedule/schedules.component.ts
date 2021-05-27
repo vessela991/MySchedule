@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 import { Group } from '../models/group.model';
-import { Schedule } from '../models/schedule.model';
 import { UserGet } from '../models/user-get.model';
 import { AuthService } from '../services/auth.service';
 import { GroupService } from '../services/group.service';
+import { NavigatorService } from '../services/navigator.service';
 import { UserService } from '../services/user.service';
 
 @Component({
@@ -13,45 +12,27 @@ import { UserService } from '../services/user.service';
   styleUrls: ['./schedules.component.css']
 })
 export class SchedulesComponent implements OnInit {
+  public user: UserGet;
+  public group: Group;
 
-  // schedule: Schedule = new Schedule();
-  user: UserGet;
-  group: Group;
-
-  constructor(private auth: AuthService, private groupService: GroupService, private userService: UserService, private router: Router) {}
-
-  ngOnInit(): void {
-    this.constructSchedule();
+  constructor(private userService: UserService, 
+    private groupService: GroupService, 
+    private authService: AuthService, 
+    private navigatorService: NavigatorService) {}
+  
+  async ngOnInit() {
+    this.user = await this.userService.getLoggedUser();
+    this.authService.loggedUser = this.user;
+    if (!this.authService.isAdmin()) {
+      this.group = await this.groupService.getLoggedUserGroup();
+    }
   }
 
   handlePersonalSchedule() {
-    this.router.navigate(["/schedules/users/" + this.user.id]);
+    this.navigatorService.navigate("/schedules/users/" + this.user.id);
   }
 
   handleGroupSchedule() {
-    this.router.navigate(["/schedules/groups/" + this.group.id]);
-  }
-
-  getGroupById(id) {
-    return this.groupService.getGroupById(id);
-  }
-
-  constructSchedule() {
-    this.userService.getUserById(this.auth.getLoggedUserId()).subscribe(data => {
-      this.user = data;
-
-      if (this.user.groupId === null) {
-        return;
-      }
-
-      this.groupService.getGroupById(this.user.groupId).subscribe(data => {
-        this.group = data;
-        // this.schedule.group = this.group;
-      });
-    });   
-  }
-
-  isLogged(){
-    return this.auth.isLogged();
+    this.navigatorService.navigate("/schedules/groups/" + this.group.id);
   }
 }

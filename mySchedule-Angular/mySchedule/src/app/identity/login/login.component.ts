@@ -1,47 +1,45 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
+import { NavigatorService } from 'src/app/services/navigator.service';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent {
 
   loginForm: FormGroup;
   errorMessage: string;
-
-  constructor(private router: Router, private formBuilder: FormBuilder, private authService: AuthService) {
+  isPasswordVisible: boolean = true;
+  
+  constructor(private navigatorService: NavigatorService, private formBuilder: FormBuilder, private authService: AuthService) {
     this.loginForm = this.formBuilder.group({
       'username': ['', [Validators.required]],
       'password': ['', [Validators.required]]
     })
   }
 
-  ngOnInit(): void {
+  async login() {
+    try {
+      let loginResult = await this.authService.login(this.loginForm.value);
+      this.errorMessage = null;
+      this.authService.saveToken(loginResult.jwt);
+      return this.navigatorService.navigate('/schedules');
+    }
+    catch (error) {
+      this.errorMessage = error.error;
+    }
   }
 
-  navigate() {
-    return this.router.navigate(['/schedules']);
-  }
-
-  login() {
-    this.authService.login(this.loginForm.value).subscribe(
-      data => {
-        this.errorMessage = null;
-        localStorage.setItem('token', data.jwt);
-        return this.navigate();
-      }, error => {
-        this.errorMessage = error.error;
-      });
+  togglePasswordVisibility() {
+    this.isPasswordVisible = !this.isPasswordVisible;
   }
 
   get username() {
     return this.loginForm.get('username');
   }
-
 
   get password() {
     return this.loginForm.get('password');
