@@ -23,4 +23,8 @@ export class GroupService {
   getLoggedUserGroup(): Promise<Group>{
     return this.http.get<Group>(this.groupPath + "/" + this.auth.loggedUser.groupId, this.auth.getAuthorizationOptions()).toPromise();
   }
+
+  createGroup(group): Promise<Group> {
+    return this.http.post<Group>(this.groupPath, group, this.auth.getAuthorizationOptions()).toPromise();
+  }
 }
