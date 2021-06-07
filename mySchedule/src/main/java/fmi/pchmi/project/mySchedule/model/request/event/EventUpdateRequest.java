@@ -9,6 +9,9 @@ import java.util.Date;
 import java.util.List;
 
 @Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class EventUpdateRequest {
     private String name;
     private String description;
@@ -16,4 +19,5 @@ public class EventUpdateRequest {
     private Date endTime;
     private List<String> participants;
     private String priority;
+    private boolean personal;
 }

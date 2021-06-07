@@ -1,5 +1,6 @@
 package fmi.pchmi.project.mySchedule.service;
 
+import fmi.pchmi.project.mySchedule.internal.CommonUtils;
 import fmi.pchmi.project.mySchedule.internal.constants.ExceptionMessages;
 import fmi.pchmi.project.mySchedule.model.database.event.Event;
 import fmi.pchmi.project.mySchedule.model.database.event.EventParticipant;
@@ -9,7 +10,6 @@ import fmi.pchmi.project.mySchedule.model.database.group.Group;
 import fmi.pchmi.project.mySchedule.model.database.user.Role;
 import fmi.pchmi.project.mySchedule.model.database.user.User;
 import fmi.pchmi.project.mySchedule.model.exception.ValidationException;
-import fmi.pchmi.project.mySchedule.model.request.event.EventCreateRequest;
 import fmi.pchmi.project.mySchedule.model.request.event.EventStatusRequest;
 import fmi.pchmi.project.mySchedule.model.request.event.EventUpdateRequest;
 import fmi.pchmi.project.mySchedule.model.validation.ValidationResult;
@@ -21,11 +21,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.*;
 
 @Service
+//@Transactional
 public class EventService {
     @Autowired
     private EventRepositoryHelper eventRepositoryHelper;
@@ -50,7 +52,7 @@ public class EventService {
         return eventRepositoryHelper.findById(eventId);
     }
 
-    public Event createEvent(EventCreateRequest eventCreateRequest, User loggedUser) {
+    public Event createEvent(EventUpdateRequest eventCreateRequest, User loggedUser) {
         validateEventRequest(eventCreateRequest);
 
         Event event = new Event();
@@ -66,7 +68,8 @@ public class EventService {
         }
         event.setPersonal(eventCreateRequest.isPersonal());
         Event savedEvent = eventRepositoryHelper.save(event);
-        loggedUser.getEventIds().add(savedEvent.getId());
+        loggedUser.setEventIds(CommonUtils.addItemToSet(loggedUser.getEventIds(), savedEvent.getId()));
+
         userRepositoryHelper.save(loggedUser);
         return savedEvent;
     }
@@ -86,7 +89,10 @@ public class EventService {
             if (eventParticipant.getUserId().equals(loggedUser.getId())) {
                 isLoggedUserParticipant = true;
                 event.getParticipants().remove(eventParticipant);
-                event.getParticipants().add(new EventParticipant(eventParticipant.getUserId(), eventStatus));
+                EventParticipant ep = new EventParticipant();
+                ep.setUserId(eventParticipant.getUserId());
+                ep.setStatus(eventStatus);
+                event.getParticipants().add(ep);
                 break;
             }
         }
@@ -96,7 +102,7 @@ public class EventService {
         }
 
         if (EventStatus.DECLINED.equals(eventStatus)) {
-            loggedUser.getEventIds().remove(eventId);
+            loggedUser.setEventIds(CommonUtils.removeItemFromSet(loggedUser.getEventIds(), eventId));
             userRepositoryHelper.save(loggedUser);
         }
 
@@ -123,14 +129,13 @@ public class EventService {
         event.setDescription(eventUpdateRequest.getDescription());
         event.setStartTime(eventUpdateRequest.getStartTime());
         event.setEndTime(eventUpdateRequest.getEndTime());
-
         if (eventUpdateRequest.getPriority() != null) {
             event.setPriority(Priority.valueOf(eventUpdateRequest.getPriority()));
         }
         Event savedEvent = eventRepositoryHelper.save(event);
         for (EventParticipant eventParticipant : event.getParticipants()) {
             User user = userRepositoryHelper.findById(eventParticipant.getUserId());
-            user.getEventIds().add(event.getId());
+            loggedUser.setEventIds(CommonUtils.addItemToSet(loggedUser.getEventIds(), event.getId()));
             userRepositoryHelper.save(user);
         }
 
@@ -139,13 +144,17 @@ public class EventService {
 
     private Set<EventParticipant> getEventParticipants(EventUpdateRequest eventUpdateRequest, User loggedUser) {
         Set<EventParticipant> eventParticipantCollection = new HashSet<>();
+        EventParticipant logged = new EventParticipant();
+        logged.setStatus(EventStatus.ACCEPTED);
+        logged.setUserId(loggedUser.getId());
+        eventParticipantCollection.add(logged);
+
         if (eventUpdateRequest.getParticipants() != null) {
             for (String participantId : eventUpdateRequest.getParticipants()) {
-                if (participantId.equals(loggedUser.getId())) {
-                    eventParticipantCollection.add(new EventParticipant(participantId, EventStatus.ACCEPTED));
-                    continue;
-                }
-                eventParticipantCollection.add(new EventParticipant(participantId, EventStatus.PENDING));
+                EventParticipant ep = new EventParticipant();
+                ep.setUserId(participantId);
+                ep.setStatus(EventStatus.PENDING);
+                eventParticipantCollection.add(ep);
                 sendParticipantEmail(participantId, eventUpdateRequest.getName());
             }
         }
@@ -172,7 +181,8 @@ public class EventService {
 
         for (EventParticipant eventParticipant : eventParticipants) {
             User user = userRepositoryHelper.findById(eventParticipant.getUserId());
-            user.getEventIds().remove(eventId);
+            user.setEventIds(CommonUtils.removeItemFromSet(user.getEventIds(), eventId));
+            userRepositoryHelper.save(user);
         }
     }
 

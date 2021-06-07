@@ -21,7 +21,7 @@ public class Group {
     private String id;
     private String name;
 
-    @ElementCollection(targetClass=String.class)
+    @ElementCollection(targetClass=String.class, fetch = FetchType.EAGER)
     private Set<String> members;
     private String managerId;
 

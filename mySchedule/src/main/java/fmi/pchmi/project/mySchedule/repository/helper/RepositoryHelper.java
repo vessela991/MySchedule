@@ -24,6 +24,7 @@ public class RepositoryHelper {
         try {
             return repository.save(t);
         } catch (Exception ex) {
+            ex.printStackTrace();
             throw InternalException.create();
         }
     }

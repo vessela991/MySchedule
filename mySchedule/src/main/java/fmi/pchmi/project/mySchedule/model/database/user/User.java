@@ -3,11 +3,13 @@ package fmi.pchmi.project.mySchedule.model.database.user;
 import fmi.pchmi.project.mySchedule.internal.constants.DatabaseConstants;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.HashSet;
 import java.util.Set;
 
 @Getter
@@ -16,6 +18,7 @@ import java.util.Set;
 @NoArgsConstructor
 @ToString
 @Entity
+//@Transactional
 @Table(name = "users")
 public class User {
     @Id
@@ -52,6 +55,6 @@ public class User {
     @NotNull(message = "GroupId cannot be null")
     private String groupId;
 
-    @ElementCollection(targetClass=String.class)
-    private Set<String> eventIds;
+    @ElementCollection(targetClass=String.class, fetch = FetchType.EAGER)
+    private Set<String> eventIds = new HashSet<>();
 }

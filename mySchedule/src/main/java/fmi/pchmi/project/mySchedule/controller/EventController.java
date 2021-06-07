@@ -4,7 +4,6 @@ import fmi.pchmi.project.mySchedule.internal.constants.CommonConstants;
 import fmi.pchmi.project.mySchedule.internal.constants.Routes;
 import fmi.pchmi.project.mySchedule.model.database.event.Event;
 import fmi.pchmi.project.mySchedule.model.database.user.User;
-import fmi.pchmi.project.mySchedule.model.request.event.EventCreateRequest;
 import fmi.pchmi.project.mySchedule.model.request.event.EventStatusRequest;
 import fmi.pchmi.project.mySchedule.model.request.event.EventUpdateRequest;
 import fmi.pchmi.project.mySchedule.service.EventService;
@@ -31,7 +30,7 @@ public class EventController {
     }
 
     @PostMapping(Routes.EVENTS)
-    public ResponseEntity<Event> createEvent(@RequestBody EventCreateRequest eventCreateRequest,
+    public ResponseEntity<Event> createEvent(@RequestBody EventUpdateRequest eventCreateRequest,
                                              @RequestAttribute(CommonConstants.LOGGED_USER) User loggedUser) {
         return new ResponseEntity<>(eventService.createEvent(eventCreateRequest, loggedUser), HttpStatus.CREATED);
     }

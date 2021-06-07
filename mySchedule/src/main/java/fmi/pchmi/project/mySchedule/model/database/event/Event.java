@@ -7,6 +7,7 @@ import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import javax.transaction.Transactional;
 import javax.validation.constraints.Size;
 import java.time.Instant;
 import java.util.*;
@@ -17,6 +18,7 @@ import java.util.*;
 @NoArgsConstructor
 @ToString
 @Entity
+//@Transactional
 @Table(name = "events")
 public class Event {
     @Id
@@ -31,7 +33,8 @@ public class Event {
     private Date startTime;
     private Date endTime;
 
-    @ElementCollection(targetClass=String.class)
+    @OneToMany(cascade = CascadeType.ALL , orphanRemoval = true)
+    @JoinColumn(name="event_id")
     private Set<EventParticipant> participants;
     private String creatorId;
     private Priority priority = Priority.LOW;

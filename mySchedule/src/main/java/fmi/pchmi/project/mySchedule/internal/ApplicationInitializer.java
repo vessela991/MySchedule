@@ -10,6 +10,8 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import static fmi.pchmi.project.mySchedule.service.UserService.getDefaultPicture;
+
 @Component
 public class ApplicationInitializer implements ApplicationRunner {
     @Autowired
@@ -28,6 +30,7 @@ public class ApplicationInitializer implements ApplicationRunner {
             user.setUserInfo("initial admin account");
             user.setGender(Gender.MALE);
             user.setRole(Role.ADMINISTRATOR);
+            user.setPicture(getDefaultPicture());
             userRepository.save(user);
         }
     }

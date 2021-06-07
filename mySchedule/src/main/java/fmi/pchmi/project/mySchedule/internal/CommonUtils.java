@@ -44,4 +44,16 @@ public class CommonUtils {
     public static <T> Set<T> asSet(Collection<T> collection) {
         return new HashSet<>(collection);
     }
+
+    public static <T> Set<T> addItemToSet(Set<T> currentSet, T item) {
+        Set<T> newSet = new HashSet<>(currentSet);
+        newSet.add(item);
+        return newSet;
+    }
+
+    public static <T> Set<T> removeItemFromSet(Set<T> currentSet, T itemToRemove) {
+        Set<T> newSet = new HashSet<>(currentSet);
+        newSet.remove(itemToRemove);
+        return newSet;
+    }
 }

@@ -145,7 +145,7 @@ public class UserService {
         userRepositoryHelper.deleteById(userId);
     }
 
-    private String getDefaultPicture() {
+    public static String getDefaultPicture() {
         try {
             byte[] fileContent = FileUtils.readFileToByteArray(new File(DEFAULT_PICTURE_PATH));
             return CommonUtils.encodeBase64(fileContent);
