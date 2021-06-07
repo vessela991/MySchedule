@@ -1,11 +1,14 @@
-<div class="d-flex justify-content-center m-3" *ngIf="group != undefined && manager != undefined">
+<div class="d-flex justify-content-center m-3" *ngIf="group !== undefined || manager !== undefined">
     <div class="card m-3 border-none" style="width: 18rem;">
         <div class="card-body">
             <h5 class="card-title">Name: {{group.name}}</h5>
-            <h5 class="card-title">Manager: {{manager.username}}</h5>
-            <div *ngIf="members != undefined">
+            <h5 class="card-title" *ngIf="manager !== undefined">Manager: {{manager.username}}</h5>
+            <div *ngIf="members !== undefined">
                 <ul class="list-group list-group-flush" *ngFor="let member of members">
-                    <li class="list-group-item">{{member.username}} {{member.email}}</li>
+                    <li class="list-group-item">
+                        <p>Username: {{member.username}}</p>
+                        <p>Email: {{member.email}}</p>
+                    </li>
                 </ul>
             </div>
 

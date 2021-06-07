@@ -1,0 +1,58 @@
+<form class="d-flex flex-column justify-content-center align-items-center w-75 mx-auto my-4" [formGroup]="createEventForm">
+
+    <input type="text" class="form-control w-50 mb-2" placeholder="Name" formControlName="name">
+
+    <div class="alert alert-danger w-50 mb-2" *ngIf="name.touched && name.errors?.required">
+        This field is required!
+    </div>
+
+    <input type="text" class="form-control w-50 mb-2" placeholder="Description" formControlName="description">
+
+    <div class="alert alert-danger w-50 mb-2" *ngIf="description.touched && description.errors?.required">
+        This field is required!
+    </div>
+
+    <label for="startTime">Start time</label>
+    <input id="startTime" type="datetime-local" class="form-control w-50 mb-2" formControlName="startTime">
+
+    <div class="alert alert-danger w-50 mb-2" *ngIf="startTime.touched && startTime.errors?.required">
+        This field is required!
+    </div>
+
+    <label for="endTime">End time</label>
+    <input id="endTime" type="datetime-local" class="form-control w-50 mb-2" formControlName="endTime">
+
+    <div class="alert alert-danger w-50 mb-2" *ngIf="endTime.touched && endTime.errors?.required">
+        This field is required!
+    </div>
+
+    <div class="btn-group btn-group-toggle" ngbRadioGroup formControlName="priority">
+        <label ngbButtonLabel class="btn-primary">
+          <input ngbButton type="radio" value="LOW"> Low
+        </label>
+        <label ngbButtonLabel class="btn-primary">
+          <input ngbButton type="radio" value="MEDIUM"> Medium
+        </label>
+        <label ngbButtonLabel class="btn-primary">
+          <input ngbButton type="radio" value="HIGH"> High
+        </label>
+      </div>
+
+      <div class="btn-group btn-group-toggle" ngbRadioGroup formControlName="personal">
+        <label ngbButtonLabel class="btn-primary">
+          <input ngbButton type="radio" value="true"> Personal event
+        </label>
+        <label ngbButtonLabel class="btn-primary">
+            <input ngbButton type="radio" value="false"> Group event
+          </label>
+      </div>
+    <div class="alert alert-danger mb-3 w-50" *ngIf="errorMessage != null">
+        {{errorMessage}}
+    </div>
+</form>
+
+<div class="modal-footer">
+    <button type="button" class="btn btn-outline-primary" (click)="editEvent()">Edit</button>
+
+    <button type="button" class="btn btn-outline-primary" (click)="activeModal.close('Close click')">Cancel</button>
+</div>

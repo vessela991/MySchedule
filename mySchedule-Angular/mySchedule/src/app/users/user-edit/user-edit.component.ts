@@ -25,7 +25,7 @@ export class UserEditComponent implements OnInit {
   constructor(private toastr: ToastrService,
               private groupService: GroupService,
               private userService: UserService,
-              private navigatorService: NavigatorService,
+              private router: Router,
               private formBuilder: FormBuilder,
               private authService: AuthService,
               private route: ActivatedRoute) {
@@ -44,8 +44,7 @@ export class UserEditComponent implements OnInit {
   async ngOnInit() {
     this.groups = await this.groupService.getAllGroups();
     this.route.params.subscribe(async params => {
-      console.log(params);
-    this.user = await this.userService.getUserById(params["id"]);
+      this.user = await this.userService.getUserById(params["id"]);
     });
 
   }
@@ -56,10 +55,10 @@ export class UserEditComponent implements OnInit {
 
   async editUser() {
     try {
-      await this.userService.editUser(this.editUserForm.value);
+      await this.userService.editUser(this.editUserForm.value, this.user.id);
       this.errorMessage = null;
       this.toastr.success("Successfully updated user.");
-      return this.navigatorService.navigate('/users');
+      return this.router.navigate(['/users']);
     } catch(error) {
       this.toastr.error("Error updating user.")
       this.errorMessage = error.error;

@@ -10,5 +10,5 @@ export class Event{
     participants: EventParticipant[]
     creatorId: string;
     priority: string;
-    isPersonal: boolean;
+    personal: boolean;
 }

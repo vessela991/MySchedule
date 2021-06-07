@@ -14,7 +14,7 @@ export class UsersComponent implements OnInit {
 
   users: Array<UserGet> = undefined;
 
-  constructor(private authService: AuthService, private userService: UserService, private navigatorService: NavigatorService) {}
+  constructor(private authService: AuthService, private userService: UserService, private router: Router) {}
 
   async ngOnInit() {
     this.users = await this.userService.getAllUsers();
@@ -25,10 +25,10 @@ export class UsersComponent implements OnInit {
   }
 
   viewUserProfile(userId: string) {
-    return this.navigatorService.navigate("/users/" + userId);
+    return this.router.navigate(["/users/" + userId]);
   }
 
   editUser(userId: string) {
-    return this.navigatorService.navigate("/users/" + userId + '/edit');
+    return this.router.navigate(["/users/" + userId + '/edit']);
   }
 }

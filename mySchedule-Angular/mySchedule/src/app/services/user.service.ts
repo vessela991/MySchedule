@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { UserGet } from '../models/user-get.model';
 import { AuthService } from '../services/auth.service';
 import { User } from '../models/user.model';
+import { Event } from '../models/event.model';
 
 @Injectable({
   providedIn: 'root'
@@ -33,7 +34,7 @@ export class UserService {
     return this.http.post<UserGet>(this.userPath, user, this.authService.getAuthorizationOptions()).toPromise();
   }
 
-  editUser(user): Promise<UserGet> {
-    return this.http.put<UserGet>(this.userPath + "/" + user.id, user, this.authService.getAuthorizationOptions()).toPromise();
+  editUser(user, id): Promise<UserGet> {
+    return this.http.put<UserGet>(this.userPath + "/" + id, user, this.authService.getAuthorizationOptions()).toPromise();
   }
 }

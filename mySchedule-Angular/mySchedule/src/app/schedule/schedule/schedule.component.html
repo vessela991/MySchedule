@@ -1,2 +1,37 @@
-<img src="../../../assets/calendar.png">
-<p>This is the demo view of the schedule for now. Actual schedule is implemented in the backend and soon to be in the frontend!</p>
+<div>
+    <div class="d-flex justify-content-center">
+       <h2>{{displayMonth}}</h2>
+    </div>
+    <div class="d-flex justify-content-center mb-3">
+        <button type="button" class="btn btn-outline-primary" (click)="decreaseMonth()"><i class="fa fa-arrow-left" aria-hidden="true"></i></button>
+        <button type="button" class="btn btn-outline-primary" (click)="setCurrentMonth()">Today</button>
+        <button type="button" class="btn btn-outline-primary" (click)="increaseMonth()"><i class="fa fa-arrow-right" aria-hidden="true"></i></button>
+    </div>
+    <div class="d-flex justify-content-center mb-3">
+        <button type="button" class="btn btn-outline-primary" (click)="exportToPdf()">Export To PDF</button>
+    </div>
+
+</div>
+  
+<table class='calendar-table w-75 m-auto mb-5' *ngIf="calendar">
+    <thead>
+        <tr>
+        <th>Monday</th>
+        <th>Tuesday</th>
+        <th>Wednesday</th>
+        <th>Thursday</th>
+        <th>Friday</th>
+        <th>Saturday</th>
+        <th>Sunday</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let row of calendar | chunk: 7; let i = index">
+        <td class="calendar-day" [ngClass]="{'past-date': c.isPastDate, 'today': c.isToday}" *ngFor="let c of row; let j = index">
+            <button class="btn btn-sm btn-outline-primary" (click)="openEventsModal(c.date)">Events</button>
+            <div class="calendar-day-header" [ngClass]="{'blue-date': c.isToday}"><strong>{{c.date.getDate()}}</strong> <strong *ngIf="c.isToday || (i==0 && j==0) || (c.date.getDate() == 1)"> {{monthNames[c.date.getMonth()]}}</strong></div>
+        </td>
+        </tr>
+    </tbody>
+</table>
+    

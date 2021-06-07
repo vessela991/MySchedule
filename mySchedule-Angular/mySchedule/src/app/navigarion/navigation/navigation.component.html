@@ -1,26 +1,26 @@
 <nav class="navbar navbar-light bg-light" *ngIf="isLogged()">
     <ul class="nav nav-pills nav-fill">
-        <a class="navbar-brand" href="/schedules">
+        <a class="navbar-brand" [routerLink]="[ '/schedules' ]" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">
             <img src="../assets/overtime.png" width="30" height="30" class="d-inline-block align-top" alt="MySchedule Logo">
             MySchedule
           </a>
         <li class="nav-item">
-            <button id="navSchedules" class="nav-link" [ngClass]="{'active': isSchedulesClicked}" (click)="navigateToSchedules()">Schedules</button>
+            <a class="nav-link" [routerLink]="[ '/schedules' ]" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">Schedules</a>
         </li>
         <li class="nav-item">
-            <button id="navGroups" class="nav-link" [ngClass]="{'active': isGroupsClicked}" (click)="navigateToGroups()">Groups</button>
+            <a class="nav-link" [routerLink]="[ '/groups' ]" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">Groups</a>
+        </li>
+        <li class="nav-item" *ngIf="isAdmin()">
+            <a class="nav-link" [routerLink]="[ '/groups/create' ]" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">Create Group</a>
         </li>
         <li class="nav-item">
-            <button id="navGroups" class="nav-link" *ngIf="isAdmin()" [ngClass]="{'active': isCreateGroupClicked}" (click)="navigateToCreateGroup()">Create Group</button>
+            <a class="nav-link" [routerLink]="[ '/users' ]" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">Users</a>
+        </li>
+        <li class="nav-item" *ngIf="isAdmin()">
+            <a class="nav-link" [routerLink]="[ '/users/create' ]" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">Create User</a>
         </li>
         <li class="nav-item">
-            <button id="navUsers" class="nav-link" [ngClass]="{'active': isUsersClicked}" (click)="navigateToUsers()">Users</button>
-        </li>
-        <li class="nav-item">
-            <button id="navCreateUser" class="nav-link" *ngIf="isAdmin()" [ngClass]="{'active': isCreateUserClicked}" (click)="navigateToCreateUser()">Create User</button>
-        </li>
-        <li class="nav-item">
-            <button id="navMyProfile" class="nav-link" [ngClass]="{'active': isMyProfileClicked}" (click)="navigateToMyProfile()">My Profile</button>
+            <a class="nav-link" [routerLink]="[ '/users', getLoggedUserId()] " routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">My Profile</a>
         </li>
         <li class="nav-item">
             <button class="nav-link" (click)="logout()">Logout</button>

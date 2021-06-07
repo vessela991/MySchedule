@@ -6,6 +6,7 @@ import { GroupService } from 'src/app/services/group.service';
 import { UserService } from 'src/app/services/user.service';
 import { NavigatorService } from 'src/app/services/navigator.service';
 import { ToastrService } from 'ngx-toastr';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-user-create',
@@ -18,7 +19,7 @@ export class UserCreateComponent implements OnInit {
   errorMessage: string;
   isPasswordVisible: boolean = false;
 
-  constructor(private toastr: ToastrService, private groupService: GroupService, private userService: UserService, private navigatorService: NavigatorService, private formBuilder: FormBuilder) {
+  constructor(private toastr: ToastrService, private groupService: GroupService, private userService: UserService, private router: Router, private formBuilder: FormBuilder) {
     this.createUserForm = this.formBuilder.group({
       'username': ['', [Validators.required]],
       'password': ['', [Validators.required]],
@@ -43,7 +44,7 @@ export class UserCreateComponent implements OnInit {
       await this.userService.createUser(this.createUserForm.value);
       this.errorMessage = null;
       this.toastr.success("Successfully created user.");
-      return this.navigatorService.navigate('/users/create');
+      return this.router.navigate(['/users/create']);
     } catch(error) {
       this.toastr.error("Error creating user.")
       this.errorMessage = error.error;

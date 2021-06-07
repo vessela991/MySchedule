@@ -16,7 +16,7 @@ export class UserProfileComponent implements OnInit {
   constructor(private activatedRoute: ActivatedRoute,
               private authService: AuthService,
               private userService: UserService,
-              private navigatorService: NavigatorService) {}
+              private router: Router) {}
 
   async ngOnInit() {
     this.activatedRoute.params.subscribe(async params => {
@@ -29,15 +29,15 @@ export class UserProfileComponent implements OnInit {
   }
 
   editProfile(userId) {
-    return this.navigatorService.navigate("/users/" + userId + '/edit')
+    return this.router.navigate(["/users/" + userId + '/edit'])
   }
 //admin group is null by defualt, need to handle it
   viewGroupSchedule(groupId: string) {
-    return this.navigatorService.navigate("/schedules/groups/" + groupId)
+    return this.router.navigate(["/schedules/groups/" + groupId])
   }
   
   viewPersonalSchedule(userId: string) {
-    return this.navigatorService.navigate("/schedules/users/" + userId)
+    return this.router.navigate(["/schedules/users/" + userId])
   }
   
 }

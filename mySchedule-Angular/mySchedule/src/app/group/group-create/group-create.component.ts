@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { GroupService } from 'src/app/services/group.service';
 import { NavigatorService } from 'src/app/services/navigator.service';
@@ -14,10 +15,10 @@ export class GroupCreateComponent implements OnInit {
   createGroupForm: FormGroup;
   errorMessage: string;
 
-  constructor(private toastr: ToastrService, private groupService: GroupService, private navigatorService: NavigatorService, private formBuilder: FormBuilder) {
+  constructor(private toastr: ToastrService, private groupService: GroupService, private router: Router, private formBuilder: FormBuilder) {
     this.createGroupForm = this.formBuilder.group({
       'name': ['', [Validators.required]],
-      'members': ['', []]
+      'members': [[], []]
     })
    }
   
@@ -28,10 +29,10 @@ export class GroupCreateComponent implements OnInit {
     try {
       console.log(this.createGroupForm.value)
 
-      // await this.groupService.createGroup(this.createGroupForm.value);
+      await this.groupService.createGroup(this.createGroupForm.value);
       this.errorMessage = null;
       this.toastr.success("Successfully created group.");
-      return this.navigatorService.navigate('/groups/create');
+      return this.router.navigate(['/groups/create']);
     } catch(error) {
       this.toastr.error("Error creating group.")
       this.errorMessage = error.error;

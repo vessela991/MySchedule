@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
 import { NavigatorService } from 'src/app/services/navigator.service';
 
@@ -14,7 +15,7 @@ export class LoginComponent {
   errorMessage: string;
   isPasswordVisible: boolean = false;
   
-  constructor(private navigatorService: NavigatorService, private formBuilder: FormBuilder, private authService: AuthService) {
+  constructor(private router: Router, private formBuilder: FormBuilder, private authService: AuthService) {
     this.loginForm = this.formBuilder.group({
       'username': ['', [Validators.required]],
       'password': ['', [Validators.required]]
@@ -26,7 +27,7 @@ export class LoginComponent {
       let loginResult = await this.authService.login(this.loginForm.value);
       this.errorMessage = null;
       this.authService.saveToken(loginResult.jwt);
-      return this.navigatorService.navigate('/schedules');
+      return this.router.navigate(['/schedules']);
     }
     catch (error) {
       this.errorMessage = error.error;

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { Group } from 'src/app/models/group.model';
 import { AuthService } from 'src/app/services/auth.service';
 import { GroupService } from 'src/app/services/group.service';
@@ -13,7 +14,7 @@ export class GroupsComponent implements OnInit {
 
   public groups: Array<Group>;
 
-  constructor(private groupService: GroupService, private authService: AuthService, private navigatorService: NavigatorService) {}
+  constructor(private groupService: GroupService, private authService: AuthService, private route: Router) {}
 
   async ngOnInit() {
     this.groups = await this.groupService.getAllGroups();
@@ -24,14 +25,14 @@ export class GroupsComponent implements OnInit {
   }
 
   handleGroupSchedule(groupId) {
-    this.navigatorService.navigate("/schedules/groups/" + groupId);
+    this.route.navigate(["/schedules/groups/" + groupId]);
   }
 
   editGroupSchedule(groupId) {
-    this.navigatorService.navigate("/groups/" + groupId + '/edit');
+    this.route.navigate(["/groups/" + groupId + '/edit']);
   }
 
   viewGroup(groupId) {
-    this.navigatorService.navigate("/groups/" + groupId);
+    this.route.navigate(["/groups/" + groupId]);
   }
 }

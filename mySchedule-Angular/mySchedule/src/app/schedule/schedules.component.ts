@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { Group } from '../models/group.model';
 import { UserGet } from '../models/user-get.model';
 import { AuthService } from '../services/auth.service';
@@ -18,7 +19,7 @@ export class SchedulesComponent implements OnInit {
   constructor(private userService: UserService, 
     private groupService: GroupService, 
     private authService: AuthService, 
-    private navigatorService: NavigatorService) {}
+    private router: Router) {}
   
   async ngOnInit() {
     this.user = await this.userService.getLoggedUser();
@@ -29,10 +30,10 @@ export class SchedulesComponent implements OnInit {
   }
 
   handlePersonalSchedule() {
-    this.navigatorService.navigate("/schedules/users/" + this.user.id);
+    this.router.navigate(["/schedules/users/" + this.user.id]);
   }
 
   handleGroupSchedule() {
-    this.navigatorService.navigate("/schedules/groups/" + this.group.id);
+    this.router.navigate(["/schedules/groups/" + this.group.id]);
   }
 }
