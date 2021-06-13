@@ -7,6 +7,7 @@
       <th scope="col">Name</th>
       <th scope="col">Description</th>
       <th scope="col">Priority</th>
+      <!-- <th scope="col">Participants/Status</th> -->
     </tr>
     </thead>
     <tbody>
@@ -16,15 +17,19 @@
       <td>{{ event.name }}</td>
       <td>{{ event.description }}</td>
       <td>{{ event.priority }}</td>
+      <!-- <td *ngFor="let eventParticipant of event.participants">{{ eventParticipant.username }} {{eventParticipant.status}}</td> -->
       <td>
-          <button type="button" class="btn btn-outline-primary" (click)="editEvent(event.id)"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>
-          <button type="button" class="btn btn-outline-primary" (click)="deleteEvent(event.id)"><i class="fa fa-trash" aria-hidden="true"></i></button>
+          <button type="button" class="btn btn-primary me-3 mb-3" [ngClass]="{'btn-secondary': !isElligible(event)}" [disabled]="!isElligible(event)" (click)="editEvent(event.id)"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>
+          <button type="button" class="btn btn-primary mb-3" [ngClass]="{'btn-secondary': !isElligible(event)}" [disabled]="!isElligible(event)" (click)="deleteEvent(event.id)"><i class="fa fa-trash" aria-hidden="true"></i></button>
+          <button type="button" class="btn btn-success me-3" [ngClass]="{'btn-secondary': !isInvited(event)}" [disabled]="!isInvited(event)" (click)="updateEventStatusAccepted(event.id)"><i class="fa fa-check" aria-hidden="true"></i></button>
+          <button type="button" class="btn btn-danger" [ngClass]="{'btn-secondary': !isInvited(event)}" [disabled]="!isInvited(event)" (click)="updateEventStatusDeclined(event.id)"><i class="fa fa-times" aria-hidden="true"></i></button>
+
         </td>
     </tr>
     </tbody>
   </table>
 <div class="modal-footer">
-    <button type="button" class="btn btn-outline-primary" (click)="openCreateEventModal()"><i class="fa fa-plus" aria-hidden="true"></i></button>
+    <button type="button" class="btn btn-primary" (click)="openCreateEventModal()"><i class="fa fa-plus" aria-hidden="true"></i></button>
 
     <button type="button" class="btn btn-outline-primary" (click)="activeModal.close('Close click')">Close</button>
 </div>

@@ -21,7 +21,7 @@ export class UserEditComponent implements OnInit {
   errorMessage: string;
   isPasswordVisible: boolean = false;
   user: UserGet;
-
+  image: File;
   constructor(private toastr: ToastrService,
               private groupService: GroupService,
               private userService: UserService,
@@ -36,7 +36,7 @@ export class UserEditComponent implements OnInit {
       'gender': ['', [Validators.required]],
       'role': ['', [Validators.required]],
       'groupId': ['', [Validators.required]],
-      'picture': ['', [Validators.required]],
+      'picture': [null],
       'userInfo': ['', []]
     })
    }
@@ -49,17 +49,43 @@ export class UserEditComponent implements OnInit {
 
   }
 
+  public onFileChanged(event) {
+    this.image = event.target.files[0];
+  }
+
   togglePasswordVisibility(): void {
     this.isPasswordVisible = !this.isPasswordVisible;
   }
 
   async editUser() {
     try {
-      await this.userService.editUser(this.editUserForm.value, this.user.id);
+      const formData = new FormData();
+      if (this.authService.isAdmin()) {
+      formData.append('picture', this.image)
+      formData.append('username', this.editUserForm.value.username);
+      formData.append('email', this.editUserForm.value.email);
+      formData.append('gender', this.editUserForm.value.gender);
+      formData.append('role', this.editUserForm.value.role);
+      formData.append('groupId', this.editUserForm.value.groupId);
+      formData.append('userInfo', this.editUserForm.value.userInfo);
+      } else {
+        if (this.image !== undefined) {
+          formData.append('picture', this.image)
+        }
+        formData.append('username', this.user.username);
+        formData.append('email', this.user.email);
+        formData.append('gender', this.user.gender);
+        formData.append('role', this.user.role);
+        formData.append('groupId', this.user.groupId);
+        formData.append('userInfo', this.editUserForm.value.userInfo);
+      }
+  
+      await this.userService.editUser(formData, this.user.id);
       this.errorMessage = null;
       this.toastr.success("Successfully updated user.");
       return this.router.navigate(['/users']);
     } catch(error) {
+      console.log(error)
       this.toastr.error("Error updating user.")
       this.errorMessage = error.error;
     }

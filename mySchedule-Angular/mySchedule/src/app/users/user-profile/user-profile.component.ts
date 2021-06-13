@@ -31,7 +31,7 @@ export class UserProfileComponent implements OnInit {
   editProfile(userId) {
     return this.router.navigate(["/users/" + userId + '/edit'])
   }
-//admin group is null by defualt, need to handle it
+
   viewGroupSchedule(groupId: string) {
     return this.router.navigate(["/schedules/groups/" + groupId])
   }

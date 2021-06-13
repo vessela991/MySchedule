@@ -64,6 +64,10 @@ export class AuthService {
     return this.isAdmin() || (this.loggedUser.role === 'MANAGER' && groupManagerId === this.loggedUser.id);
   }
 
+  isAdminOrManagerOrEventOwner(groupManagerId: string, eventCreatorId: string): boolean {
+    return this.isAdminOrManager(groupManagerId) || this.loggedUser.id === eventCreatorId;
+  }
+
   get loggedUser(): UserGet {
     return this._loggedUser;
   }

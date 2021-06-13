@@ -20,8 +20,8 @@ export class UsersComponent implements OnInit {
     this.users = await this.userService.getAllUsers();
   }
 
-  isAdmin(): boolean {
-    return this.authService.isAdmin();
+  isAdminOrUser(userId: string): boolean {
+    return this.authService.isAdmin() || this.authService.getLoggedUserId() === userId;
   }
 
   viewUserProfile(userId: string) {

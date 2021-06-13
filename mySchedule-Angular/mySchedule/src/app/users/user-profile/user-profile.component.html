@@ -2,13 +2,13 @@
     <div class="card m-3 border-none" style="width: 18rem;">
         <img src='{{"data:image/jpeg;base64," + user.picture}}' class="card-img-top" alt="...">
         <div class="card-body">
-          <h5 class="card-title">{{user.username}}</h5>
+          <h5 class="card-title">Username: {{user.username}}</h5>
           <ul class="list-group list-group-flush">
-              <li class="list-group-item">{{user.email}}</li>
-              <li class="list-group-item">{{user.gender}}</li>
-              <li class="list-group-item">{{user.role}}</li>
+              <li class="list-group-item">Email: {{user.email}}</li>
+              <li class="list-group-item">Gender: {{user.gender}}</li>
+              <li class="list-group-item">Role: {{user.role}}</li>
               <li class="list-group-item">    
-                  <p class="card-text">{{user.userInfo}}</p>
+                  <p class="card-text">User info: {{user.userInfo}}</p>
               </li>
             </ul>
             <div class="d-flex justify-content-center m-3 flex-column">

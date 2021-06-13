@@ -24,9 +24,8 @@ export class SchedulesComponent implements OnInit {
   async ngOnInit() {
     this.user = await this.userService.getLoggedUser();
     this.authService.loggedUser = this.user;
-    if (!this.authService.isAdmin()) {
-      this.group = await this.groupService.getLoggedUserGroup();
-    }
+    this.group = await this.groupService.getLoggedUserGroup();
+    
   }
 
   handlePersonalSchedule() {

@@ -14,13 +14,12 @@ import { UserService } from 'src/app/services/user.service';
 export class CreateEventModalComponent implements OnInit {
   @Input() date: Date;
 
-  @Input() isPersonal: boolean;
+  @Input() public isPersonal: boolean;
   
 
   public users: Array<UserGet>;
   createEventForm: FormGroup;
   errorMessage: string;
-  isPasswordVisible: boolean = false;
   eventParticipants: Array<String>;
 
   constructor(private toastr: ToastrService,
@@ -28,6 +27,12 @@ export class CreateEventModalComponent implements OnInit {
               private eventService:EventService,
               private userService: UserService,
               public activeModal: NgbActiveModal) {
+   
+   }
+  
+  async ngOnInit() {
+    console.log(this.isPersonal)
+    this.users = await this.userService.getAllUsers();
     this.createEventForm = this.formBuilder.group({
       'name': ['', [Validators.required]],
       'description': ['', []],
@@ -35,16 +40,13 @@ export class CreateEventModalComponent implements OnInit {
       'endTime': ['', [Validators.required]],
       'participants': [[], []],
       'priority': ['', [Validators.required]],
-      'personal': ['', [Validators.required]]
+      'personal': [this.isPersonal]
     })
-   }
-  
-  async ngOnInit() {
-    this.users = await this.userService.getAllUsers();
   }
 
   async createEvent() {
     try {
+      console.log(this.createEventForm.value)
       await this.eventService.createEvent(this.createEventForm.value);
       this.errorMessage = null;
       this.toastr.success("Successfully created event.");

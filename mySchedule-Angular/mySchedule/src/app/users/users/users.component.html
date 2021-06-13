@@ -6,7 +6,7 @@
               <p class="card-text"></p>
               <div class="d-flex justify-content-center flex-column">
                 <button class="btn btn-primary btn-sm mb-1" (click)="viewUserProfile(user.id)">View profile</button>
-                <button class="btn btn-primary btn-sm" *ngIf="isAdmin()" (click)="editUser(user.id)">Edit user</button>
+                <button class="btn btn-primary btn-sm" *ngIf="isAdminOrUser(user.id)" (click)="editUser(user.id)">Edit profile</button>
               </div>
             </div>
           </div>

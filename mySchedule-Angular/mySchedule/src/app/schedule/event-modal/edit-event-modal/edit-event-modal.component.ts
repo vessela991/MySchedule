@@ -30,26 +30,27 @@ export class EditEventModalComponent implements OnInit {
     private eventService:EventService,
     private userService: UserService,
     public activeModal: NgbActiveModal) {
-      this.createEventForm = this.formBuilder.group({
-      name: ['', [Validators.required]],
-      description: ['', []],
-      startTime: ['', [Validators.required]],
-      endTime: ['', [Validators.required]],
-      priority: ['', [Validators.required]],
-      personal: ['', [Validators.required]]
-      })
+
   }
 
   async ngOnInit() {
     this.users = await this.userService.getAllUsers();
     this.currentEvent = await this.eventService.getById(this.Id);
-    console.log(this.currentEvent);
+    this.createEventForm = this.formBuilder.group({
+      name: ['', [Validators.required]],
+      description: ['', []],
+      startTime: ['', [Validators.required]],
+      endTime: ['', [Validators.required]],
+      priority: ['', [Validators.required]],
+      personal: [this.currentEvent.personal, [Validators.required]]
+      })
+
     this.createEventForm.setValue(
     {
       name: this.currentEvent.name,
       description: this.currentEvent.description,
       startTime: new DatePipe('en-US').transform(this.currentEvent.startTime, 'yyyy-MM-ddThh:mm'),
-      endTime: new DatePipe('en-US').transform(this.currentEvent.startTime, 'yyyy-MM-ddThh:mm'),
+      endTime: new DatePipe('en-US').transform(this.currentEvent.endTime, 'yyyy-MM-ddThh:mm'),
       priority: this.currentEvent.priority,
       personal: this.currentEvent.personal ? "true" : "false"
     });

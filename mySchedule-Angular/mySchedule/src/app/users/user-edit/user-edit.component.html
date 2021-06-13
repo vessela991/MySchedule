@@ -52,7 +52,7 @@
 
     <div class="input-group w-50 mb-2">
         <label class="input-group-text" for="uploadPicture">Upload picture</label>
-        <input type="file" formControlName="picture" class="form-control" id="uploadPicture">
+        <input type="file" formControlName="picture" (change)="onFileChanged($event)"  class="form-control" id="uploadPicture">
     </div>
 
     <div *ngIf="isAdmin()" class="d-flex align-items-center w-50 mb-2">
