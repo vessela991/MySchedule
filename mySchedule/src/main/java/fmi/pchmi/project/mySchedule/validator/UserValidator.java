@@ -3,6 +3,7 @@ package fmi.pchmi.project.mySchedule.validator;
 import fmi.pchmi.project.mySchedule.internal.constants.ExceptionMessages;
 import fmi.pchmi.project.mySchedule.internal.CommonUtils;
 import fmi.pchmi.project.mySchedule.model.request.user.UserEditRequest;
+import fmi.pchmi.project.mySchedule.model.request.user.UserGetRequest;
 import fmi.pchmi.project.mySchedule.model.validation.ValidationResult;
 import fmi.pchmi.project.mySchedule.internal.constants.DatabaseConstants;
 import fmi.pchmi.project.mySchedule.model.database.user.Gender;
@@ -72,7 +73,7 @@ public class UserValidator {
         return ValidationResult.success();
     }
 
-    public ValidationResult validateUserRequest(UserEditRequest userRequest) {
+    public ValidationResult validateUserRequest(UserGetRequest userRequest) {
         if (userRequest.getUsername() == null || userRequest.getUsername().isBlank()) {
             return ValidationResult.failure(ExceptionMessages.USER_NO_USERNAME);
         }

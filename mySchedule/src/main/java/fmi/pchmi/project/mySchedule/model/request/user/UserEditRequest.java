@@ -13,3 +13,4 @@ import org.springframework.web.multipart.MultipartFile;
 public class UserEditRequest extends UserGetRequest {
     private MultipartFile picture;
 }
+

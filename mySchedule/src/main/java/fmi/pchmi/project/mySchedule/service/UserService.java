@@ -24,6 +24,7 @@ import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.sql.rowset.serial.SerialBlob;
 import java.io.File;
@@ -101,7 +102,7 @@ public class UserService {
     }
 
     public UserResponse editUser(String userId, UserEditRequest userEditRequest, User loggedUser) {
-        if (!loggedUser.getId().equals(userId) || !Role.ADMINISTRATOR.equals(loggedUser.getRole())) {
+        if (!loggedUser.getId().equals(userId) && !Role.ADMINISTRATOR.equals(loggedUser.getRole())) {
             throw ForbiddenException.create();
         }
 

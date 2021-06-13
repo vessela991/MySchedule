@@ -5,6 +5,7 @@ import fmi.pchmi.project.mySchedule.internal.constants.Routes;
 import fmi.pchmi.project.mySchedule.model.database.event.Event;
 import fmi.pchmi.project.mySchedule.model.database.user.User;
 import fmi.pchmi.project.mySchedule.model.request.user.UserEditRequest;
+import fmi.pchmi.project.mySchedule.model.request.user.UserGetRequest;
 import fmi.pchmi.project.mySchedule.model.request.user.UserRequest;
 import fmi.pchmi.project.mySchedule.model.response.user.UserResponse;
 import fmi.pchmi.project.mySchedule.service.UserService;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Collection;
 
@@ -43,7 +45,7 @@ public class UserController {
 
     @PutMapping(Routes.USERS_ID)
     public ResponseEntity<UserResponse> editUser(@PathVariable("id") String userId,
-                                                 @RequestBody UserEditRequest userEditRequest,
+                                                 @ModelAttribute  UserEditRequest userEditRequest,
                                                  @RequestAttribute(CommonConstants.LOGGED_USER) User loggedUser) {
         return new ResponseEntity<>(userService.editUser(userId, userEditRequest, loggedUser), HttpStatus.OK);
     }
