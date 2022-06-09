@@ -1,4 +1,4 @@
-<div class="d-flex justify-content-center m-3 flex-row" *ngIf="groups !== undefined">
+<div class="d-flex justify-content-center m-3 flex-row flex-wrap" *ngIf="groups !== undefined">
     <div *ngFor="let group of groups">
         <div class="card text-center m-3" style="width:18rem;">
             <div class="card-body">
@@ -7,7 +7,8 @@
               <div class="d-flex justify-content-center flex-column">
                 <button class="btn btn-primary btn-sm mb-1" (click)="handleGroupSchedule(group.id)">View schedule</button>
                 <button class="btn btn-primary btn-sm mb-1" (click)="viewGroup(group.id)">View group</button>
-                <button class="btn btn-primary btn-sm" *ngIf="isAdminOrManager(group.id)" (click)="editGroupSchedule(group.id)">Edit group</button>
+                <button class="btn btn-primary btn-sm mb-1" *ngIf="isAdminOrManager(group.id)" (click)="editGroupSchedule(group.id)">Edit group</button>
+                <button class="btn btn-primary btn-sm" *ngIf="isAdmin()" (click)="deleteGroup(group.id)">Delete group</button>
               </div>
             </div>
         </div>

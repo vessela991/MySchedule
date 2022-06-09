@@ -25,17 +25,16 @@ export class GroupViewComponent implements OnInit {
     this.route.params.subscribe(async params => {
       let groupId = params["id"];
       this.group = await this.groupService.getGroupById(groupId);
-      if (this.group.managerId === undefined) {
-        return;
-      }
-      this.manager = await this.userService.getUserById(this.group.managerId);
 
-     
       for (let member of this.group.members) {
         var user = await this.userService.getUserById(member);
         this.members.push(user);
       }
 
+      if (this.group.managerId === undefined) {
+        return;
+      }
+      this.manager = await this.userService.getUserById(this.group.managerId);
     });
   }
 

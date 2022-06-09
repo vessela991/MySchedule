@@ -36,4 +36,8 @@ export class GroupService {
   editGroup(group, id): Promise<Group> {
     return this.http.put<Group>(this.groupPath + "/" + id, group, this.auth.getAuthorizationOptions()).toPromise();
   }
+
+  deleteGroup(id): Promise<void> {
+    return this.http.delete<void>(this.groupPath + "/" + id, this.auth.getAuthorizationOptions()).toPromise();
+  }
 }

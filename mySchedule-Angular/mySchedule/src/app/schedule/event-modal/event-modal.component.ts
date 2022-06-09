@@ -42,67 +42,20 @@ export class EventModalComponent implements OnInit {
               private toastr: ToastrService) {}
 
   async ngOnInit(): Promise<void> {
-    await this.refreshEvents();
     if (!this.isPersonal) {
       this.group = await this.groupService.getGroupById(this.id);
     }
+    await this.refreshEvents();
   }
   
   async refreshEvents() {
     if (this.isPersonal) {
      let allEvents = await this.userService.getEventsByUserId(this.id);
      this.events = allEvents.filter((e: Event) => e.personal === true && this.getEventsByDay(e));
-    //  for(let i =0; i< events.length; i++) {
-    //   let eventGet = new EventGet();
-    //   eventGet.id = events[i].id;
-    //   eventGet.name = events[i].name;
-    //   eventGet.description = events[i].description;
-    //   eventGet.creationTime = events[i].creationTime;
-    //   eventGet.startTime = events[i].startTime;
-    //   eventGet.endTime = events[i].endTime;
-    //   eventGet.creatorId = events[i].creatorId;
-    //   eventGet.priority = events[i].priority;
-    //   eventGet.personal = events[i].personal;
-
-    //   let eventParticipantRepresentation: Array<EventParticipantRepresentation> = [];
-    //    for (let j = 0; j < events[i].participants.length; j++) {
-    //     let evp = new EventParticipantRepresentation();
-    //     evp.status = this.events[i].participants[j].status;
-    //     evp.userId = this.events[i].participants[j].userId;
-    //     let user =  await this.userService.getUserById(evp.userId);
-    //     evp.username = user.username;
-    //     eventParticipantRepresentation.push(evp);
-    //    }
-    //    eventGet.participants = eventParticipantRepresentation;
-
-    //  }
     } else {
       let allEvents = await this.groupService.getAllEventsByGroupId(this.id);
+      console.log(allEvents);
       this.events = allEvents.filter((e: Event) => this.getEventsByDay(e));
-      // for(let i =0; i< events.length; i++) {
-      //   let eventGet = new EventGet();
-      //   eventGet.id = events[i].id;
-      //   eventGet.name = events[i].name;
-      //   eventGet.description = events[i].description;
-      //   eventGet.creationTime = events[i].creationTime;
-      //   eventGet.startTime = events[i].startTime;
-      //   eventGet.endTime = events[i].endTime;
-      //   eventGet.creatorId = events[i].creatorId;
-      //   eventGet.priority = events[i].priority;
-      //   eventGet.personal = events[i].personal;
-  
-      //   let eventParticipantRepresentation: Array<EventParticipantRepresentation> = [];
-      //    for (let j = 0; j < events[i].participants.length; j++) {
-      //     let evp = new EventParticipantRepresentation();
-      //     evp.status = this.events[i].participants[j].status;
-      //     evp.userId = this.events[i].participants[j].userId;
-      //     let user =  await this.userService.getUserById(evp.userId);
-      //     evp.username = user.username;
-      //     eventParticipantRepresentation.push(evp);
-      //    }
-      //    eventGet.participants = eventParticipantRepresentation;
-  
-      //  }
     }
   }
 
